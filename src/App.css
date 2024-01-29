@@ -4,6 +4,7 @@
     body{
         @apply font-poppins;
         @apply text-white;
-        @apply bg-purple-1
+     
     }
+  
 }

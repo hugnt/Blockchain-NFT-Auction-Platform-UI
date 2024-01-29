@@ -1,0 +1,88 @@
+.menu-item {
+    
+    color: transparent;
+    font-weight:700;
+    background: url("https://wweb.dev/resources/creative-hover-effects/wave.svg") repeat-x #fff;
+    background-position-x: 0%;
+    background-position-y: 0%;
+    background-size: auto;
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 200% 100%;
+    background-position-x: 0;
+    background-position-y: 2em;
+    -webkit-transition: background-position-y 0.6s ease;
+    transition: background-position-y 0.6s ease;
+    -webkit-animation: waveAnimation 4s infinite linear;
+    animation: waveAnimation 4s infinite linear;
+    animation-play-state: running;
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+  }
+  
+  .menu-item:hover {
+    
+    background-position-x: 0;
+    background-position-y: 0;
+    -webkit-animation-play-state: running;
+    animation-play-state: running;
+  }
+  
+  @keyframes waveAnimation{
+    from {
+      background-position-x: 0%;
+    }
+    to {
+      background-position-x: 200%;
+    }
+  }
+
+  
+.menu-item{	
+	position: relative;
+    text-shadow: none;
+}
+.SMN_effect-33 a {
+	overflow: visible;
+	padding: .25em .4em
+}
+
+.SMN_effect-33 a:before, .SMN_effect-33 a:after {
+	-webkit-transition: -webkit-transform .3s;
+	transition: transform .3s;
+	background: rgba(12, 68, 93, 1);
+	content: "";
+	position: absolute;
+}
+
+.SMN_effect-33 a:before {
+	top: -webkit-calc(110% - .25em);
+	top: calc(110% - .25em);
+	left: -webkit-calc(50% - .3em);
+	left: calc(50% - .3em);
+	width: .6em;
+	height: .6em;
+	border-radius: 1.2em;
+	-webkit-transform: scale(0);
+	transform: scale(0)
+}
+
+.SMN_effect-33 a:after {
+	top: 110%;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	-webkit-transform: scaleX(0);
+	transform: scaleX(0)
+}
+
+.SMN_effect-33 a:hover:before {
+	webkit-transform: scale(1);
+	transform: scale(1)
+}
+
+.SMN_effect-33 a:hover:after {
+	-webkit-transform: scaleX(1);
+	transform: scaleX(1)
+}

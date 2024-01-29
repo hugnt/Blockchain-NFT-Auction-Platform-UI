@@ -1,6 +1,6 @@
 
 
-.MuiPagination-outline{
+#page-pagination .MuiPagination-outline{
     color:"#fff";
     border:"1px solid #fff";
     
@@ -16,7 +16,7 @@
 .MuiPagination-text{
     color:"#fff";
 }
-.MuiButtonBase-root{
+#page-pagination .MuiButtonBase-root{
     background-color:rgba(255, 255, 255, 0.20)!important;
     color:#fff!important;
     font-family: 'Poppins', sans-serif !important;
@@ -24,10 +24,10 @@
     border: 1px solid #fff!important;
     font-weight:600!important;
 }
-.MuiPaginationItem-root{
+#page-pagination .MuiPaginationItem-root{
     color:#fff!important;
 }
-.Mui-selected {
+#page-pagination .Mui-selected {
     background-color:#fff!important;
     color:rgba(33, 17, 52, 1)!important;
     border: rgba(33, 17, 52, 1)!important;

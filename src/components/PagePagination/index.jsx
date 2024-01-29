@@ -18,14 +18,17 @@ const theme = createTheme({
   });
 export default function PagePagination() {
   return (
-    <ThemeProvider theme={theme}>
-          <Pagination
-            count={10}
-            size="large"
-            variant="outlined"
-            shape="rounded"
-            color="white"
-          />
-        </ThemeProvider>
+    <div id="page-pagination">
+      <ThemeProvider theme={theme}>
+                <Pagination
+                  count={10}
+                  size="large"
+                  variant="outlined"
+                  shape="rounded"
+                  color="white"
+                />
+              </ThemeProvider>
+    </div>
+    
   )
 }

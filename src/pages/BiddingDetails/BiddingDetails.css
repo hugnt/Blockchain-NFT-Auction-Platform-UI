@@ -1,0 +1,14 @@
+#nft-infor{
+    background: rgba(0,0,0,0.47);
+background: linear-gradient(180deg,rgba(0,0,0,0.47) 0%, rgba(255,255,255,0) 100%);
+background: -webkit-linear-gradient(180deg,rgba(0,0,0,0.47) 0%, rgba(255,255,255,0) 100%);
+background: -moz-linear-gradient(180deg,rgba(0,0,0,0.47) 0%, rgba(255,255,255,0) 100%);
+box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+-webkit-box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+-moz-box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+}
+#bid-action-box{
+    position: -webkit-sticky;
+    position: sticky;
+    bottom:3rem;
+}

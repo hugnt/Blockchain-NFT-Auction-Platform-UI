@@ -6,7 +6,7 @@ import avatar from "~/assets/images/layout/ava.png"
 import './Header.css'
 export default function Header() {
   return (
-    <div id="header-wrapper" className=''>
+    <div id="header-wrapper" className=' border-b border-fog-1'>
         <div id="header" className='flex justify-between items-center container max-w-7xl font-semibold cursor-pointer'>
             <div id="logo-wrapper" className='flex justify-start w-3/12'>
             <div id="logo" className=' bg-purple-3 px-16 py-6'>

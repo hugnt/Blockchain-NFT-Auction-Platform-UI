@@ -2,13 +2,14 @@ import React from 'react';
 import './App.css'
 
 import { DefaultLayout } from '~/layouts';
-import BiddingList from './pages/BiddingList';
+import { BiddingDetails } from './pages';
+
 
 function App() {
   return (
       <div className='App'>
-        <DefaultLayout>
-          <BiddingList />
+        <DefaultLayout isBannerActive={false}>
+          <BiddingDetails />
         </DefaultLayout>
       </div>
   );

@@ -3,7 +3,7 @@ import nftImg from "~/assets/images/nft/nft4.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import './BiddingDetails.css'
-import { TabBox, SlideArea } from "~/components";
+import { TabBox, SlideArea, NFT } from "~/components";
 import SlideHaft from "~/components/SlideArea";
 export default function BiddingDetails() {
   return (
@@ -90,7 +90,7 @@ export default function BiddingDetails() {
         <div className="container max-w-7xl flex items-center mb-10">
           <span className="font-semibold text-2xl">Trending  Auction</span>
         </div>
-        <SlideHaft/>
+        <SlideHaft lstComponent={[<NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>]}/>
       </div>
     </div>
   );

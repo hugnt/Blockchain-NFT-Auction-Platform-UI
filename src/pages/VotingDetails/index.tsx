@@ -1,6 +1,6 @@
 import React from "react";
 import "./VotingDetails.css";
-import { NFTOnVoting } from "~/components";
+import { NFT, NFTOnVoting } from "~/components";
 import SlideHaft from "~/components/SlideArea";
 
 export default function VotingDetails() {
@@ -34,7 +34,7 @@ export default function VotingDetails() {
         <div className="container max-w-7xl flex items-center mb-12">
           <span className="font-semibold text-2xl">List NFT on  Auction</span>
         </div>
-        <SlideHaft />
+        <SlideHaft lstComponent={[<NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>]}/>
       </div>
     </div>
   );

@@ -6,3 +6,4 @@ export { default as TabBox } from './TabBox';
 export { default as BidInforRow } from './BidInforRow';
 export { default as NFTOnVoting } from './NFTOnVoting';
 export { default as SlideArea } from './SlideArea';
+export { default as UserRow } from './UserRow';

@@ -1,0 +1,6 @@
+#NFTCategory{
+    background: rgba(255,0,0,0.03);
+background: linear-gradient(180deg,rgba(255,0,0,0.03) 60%, rgba(162,89,255,0.9) 130%);
+background: -webkit-linear-gradient(180deg,rgba(255,0,0,0.03) 60%, rgba(162,89,255,0.9) 130%);
+background: -moz-linear-gradient(180deg,rgba(255,0,0,0.03) 60%, rgba(162,89,255,0.9) 130%);
+}

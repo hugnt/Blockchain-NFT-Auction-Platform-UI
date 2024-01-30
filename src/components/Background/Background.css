@@ -112,3 +112,22 @@
     transform-origin: -12vw 8vh;
     box-shadow: 72vmin 0 9.537931136402435vmin currentColor;
 }
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(162, 89, 255, 0.40); 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgba(66, 12, 88, 1); 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background:rgba(12, 68, 93, 1); 
+  }

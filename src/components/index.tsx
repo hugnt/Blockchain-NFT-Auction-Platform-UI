@@ -4,4 +4,5 @@ export { default as Background } from './Background';
 export { default as CheckBox } from './CheckBox';
 export { default as TabBox } from './TabBox';
 export { default as BidInforRow } from './BidInforRow';
-export * from './SlideArea';
+export { default as NFTOnVoting } from './NFTOnVoting';
+export { default as SlideArea } from './SlideArea';

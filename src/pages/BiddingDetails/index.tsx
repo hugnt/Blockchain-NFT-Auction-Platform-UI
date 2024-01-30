@@ -3,7 +3,7 @@ import nftImg from "~/assets/images/nft/nft4.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import './BiddingDetails.css'
-import { TabBox } from "~/components";
+import { TabBox, SlideArea } from "~/components";
 import SlideHaft from "~/components/SlideArea";
 export default function BiddingDetails() {
   return (
@@ -72,7 +72,7 @@ export default function BiddingDetails() {
           </div>
         </div>
         <div id="bidding-action" className="ms-10 w-4/12 ">
-          <div id="bid-action-box" className="top-12 mb-3 py-8 rounded-[20px] border border-fog-2 bg-fog-1 overflow-hidden flex flex-col items-center">
+          <div id="bid-action-box" className="top-12 mb-12 py-8 rounded-[20px] border border-fog-2 bg-fog-1 overflow-hidden flex flex-col items-center">
               <div className="font-semibold">Bid Details</div>
               <div id="bid-action-status" className="my-3">Current Bid</div>
               <div id="bid-action-ada" className="font-semibold text-3xl">1311 ADA</div>

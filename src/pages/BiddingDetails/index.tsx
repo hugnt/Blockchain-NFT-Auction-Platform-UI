@@ -3,8 +3,23 @@ import nftImg from "~/assets/images/nft/nft4.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import './BiddingDetails.css'
-import { TabBox, SlideArea, NFT } from "~/components";
+import { TabBox, SlideArea, NFT, BidInforRow } from "~/components";
 import SlideHaft from "~/components/SlideArea";
+
+var lstComponent = [
+  <div className="rounded-[20px] bg-fog-4 py-10 px-6 mt-8">
+    <BidInforRow className="mb-4"/>
+    <BidInforRow className="mb-4"/>
+    <BidInforRow className="mb-4"/>
+    <BidInforRow className="mb-4"/>
+  </div>,
+  <div className="rounded-[20px] bg-fog-4 py-10 px-6 mt-8">
+    <BidInforRow className="mb-4"/>
+    <BidInforRow className="mb-4"/>
+    <BidInforRow className="mb-4"/>
+    <BidInforRow className="mb-4"/>
+  </div>
+]
 export default function BiddingDetails() {
   return (
     <div className="py-12">
@@ -68,7 +83,7 @@ export default function BiddingDetails() {
             </div>
           </div>
           <div id="bidding-history" className="my-12">
-            <TabBox />
+            <TabBox lstComponent={lstComponent} lstLabel={["Bids", "Owners"]}/>
           </div>
         </div>
         <div id="bidding-action" className="ms-10 w-4/12 ">

@@ -6,14 +6,15 @@ import { Background } from '~/components'
 interface DefaultLayoutProps {
   children: ReactNode;
   isBannerActive?:Boolean;
+  isBannerEmpty?:Boolean;
 }
 export default function DefaultLayout(props:DefaultLayoutProps) {
-  let {isBannerActive=true} = props;
+  let {isBannerActive=true, isBannerEmpty=false} = props;
   return (
     <Background>
         {isBannerActive&&<div className='h-screen overflow-hidden'>
             <Header />
-            <Banner />     
+            <Banner isBannerEmpty={isBannerEmpty}/>     
         </div>}
         {!isBannerActive&&<Header />}
         <div id="main" className='bg-transparent'>

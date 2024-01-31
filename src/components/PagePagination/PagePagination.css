@@ -1,22 +1,11 @@
 
 
-#page-pagination .MuiPagination-outline{
+#pagePagination .MuiPagination-outline{
     color:"#fff";
     border:"1px solid #fff";
     
 }
-.MuiPagination-root{
-    color:"#fff";
-    
-}
-.MuiPagination-ul{
-    color:#fff;
-    
-}
-.MuiPagination-text{
-    color:"#fff";
-}
-#page-pagination .MuiButtonBase-root{
+#pagePagination .MuiButtonBase-root{
     background-color:rgba(255, 255, 255, 0.20)!important;
     color:#fff!important;
     font-family: 'Poppins', sans-serif !important;
@@ -24,12 +13,12 @@
     border: 1px solid #fff!important;
     font-weight:600!important;
 }
-#page-pagination .MuiPaginationItem-root{
+#pagePagination .MuiPaginationItem-root{
     color:#fff!important;
 }
-#page-pagination .Mui-selected {
+#pagePagination ul li button.Mui-selected {
     background-color:#fff!important;
-    color:rgba(33, 17, 52, 1)!important;
-    border: rgba(33, 17, 52, 1)!important;
+    color:purple!important;
+    border: 2px solid purple!important;
     
 }

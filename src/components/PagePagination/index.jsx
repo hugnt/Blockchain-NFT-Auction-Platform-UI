@@ -18,7 +18,7 @@ const theme = createTheme({
   });
 export default function PagePagination() {
   return (
-    <div id="page-pagination">
+    <div id="pagePagination">
       <ThemeProvider theme={theme}>
                 <Pagination
                   count={10}

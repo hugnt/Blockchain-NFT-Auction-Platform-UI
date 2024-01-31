@@ -11,6 +11,12 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
+
+interface PropsTab{
+  lstComponent?:React.ReactNode[];
+  lstLabel?: string[];
+  className?:string;
+}
 const theme = createTheme({
   palette: {
     primary: {
@@ -53,7 +59,8 @@ function a11yProps(index: number) {
   };
 }
 
-export default function TabBox() {
+export default function TabBox(props: PropsTab) {
+  let {lstComponent, lstLabel, className} = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -61,39 +68,31 @@ export default function TabBox() {
   };
 
   return (
-    <div id="page-tab">
+    <div id="page-tab" className={`${className}`}>
       <ThemeProvider theme={theme}>
         <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider", maxWidth:"80rem", margin:"auto" }} >
             <Tabs
               value={value}
               onChange={handleChange}
               textColor="primary"
               indicatorColor="primary"
               aria-label="basic tabs example"
-              
-            >
-              <Tab label="Bids" {...a11yProps(0)} />
-              <Tab label="Owners" {...a11yProps(1)} />
+              className=""
+            >            
+              {
+                lstLabel?.map((x, i)=>(
+                  <Tab label={x} {...a11yProps(i)} />
+                ))
+              }
             </Tabs>
           </Box>
-          <CustomTabPanel value={value} index={0} >
-            <div className="rounded-[20px] bg-fog-4 py-10 px-6 mt-8">
-              <BidInforRow className="mb-4"/>
-              <BidInforRow className="mb-4"/>
-              <BidInforRow className="mb-4"/>
-              <BidInforRow className="mb-4"/>
-            </div>
-            
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-          <div className="rounded-[20px] bg-fog-4 py-10 px-6 mt-8">
-              <BidInforRow className="mb-4"/>
-              <BidInforRow className="mb-4"/>
-              <BidInforRow className="mb-4"/>
-              <BidInforRow className="mb-4"/>
-            </div>
-          </CustomTabPanel>
+          {
+              lstComponent?.map((x,i) => (
+                <CustomTabPanel value={value} index={i} key={i}>{x}</CustomTabPanel>
+              ))
+          }
+        
         </Box>
       </ThemeProvider>
     </div>

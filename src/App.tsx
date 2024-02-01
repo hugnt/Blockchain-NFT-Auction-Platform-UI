@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css'
 import { Provider } from 'react-redux';
 import { DefaultLayout } from '~/layouts';
-import { BiddingDetails, BiddingList, Home, VotingDetails, Profile } from './pages';
+import { BiddingDetails, BiddingList, Home, VotingDetails, Profile, MintingAsset } from './pages';
 import { createStore } from 'redux';
 import { reducer } from './utils';
 
@@ -12,7 +12,7 @@ function App() {
     <Provider store={store}>
       <div className='App'>
         <DefaultLayout isBannerActive={false}>
-          <Profile />
+          <MintingAsset />
         </DefaultLayout>
       </div>
     </Provider>

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { BiddingDetails, BiddingList, Home, MintingAsset, Profile, VotingDetails } from "~/pages";
+import { BiddingDetails, BiddingList, Home, MintingAsset, NotFound, Profile, VotingDetails } from "~/pages";
 interface PublicRoute {
     name: string;
     path: string;
@@ -41,6 +41,10 @@ export const publicRoutes:PublicRoute[] = [
         path:"/Profile/:id",
         component: Profile
     },
-
+    {
+        name: "NotFound",
+        path: '*',
+        component: NotFound,
+    }
 ];
 

@@ -9,22 +9,26 @@ interface DefaultLayoutProps {
   isBannerEmpty?:Boolean;
   pageName?:string;
 }
+
+var isNotFound = false;
 export default function DefaultLayout(props:DefaultLayoutProps) {
   let {isBannerActive=true, isBannerEmpty=false, pageName=""} = props;
   if(pageName=="BiddingDetails"||pageName=="MintingAsset"||pageName=="Profile"){
     isBannerActive = false;
   }
+  if(pageName=="NotFound") isNotFound=true;
+  else isNotFound=false;
   return (
     <Background>
-        {isBannerActive&&<div className='h-screen overflow-hidden'>
+        {!isNotFound&&isBannerActive&&<div className='h-screen overflow-hidden'>
             <Header />
             <Banner isBannerEmpty={isBannerEmpty} pageName={pageName}/>     
         </div>}
-        {!isBannerActive&&<Header />}
+        {!isNotFound&&!isBannerActive&&<Header />}
         <div id="main" className='bg-transparent'>
             {<div className="">{props.children}</div>}
         </div>
-        <Footer/>
+        {!isNotFound&&<Footer/>}
     </Background>
   )
 }

@@ -18,17 +18,35 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoutes } from "./routes";
 
 const store = createStore(reducer);
+
+
 function App() {
+  
   return (
     <Provider store={store}>
       <Router>
         <div className="App">
           <Routes>
-          {publicRoutes.map((route, i) => {
+            {publicRoutes.map((route, i) => {
               let Layout = DefaultLayout;
-              const Page  = route.component;
+              const Page = route.component;
               var namePage = route.name;
-              return <Route key={i} path={route.path} element={<Layout pageName={namePage}><Page/></Layout>}/>
+              return (
+                <Route
+                  key={i}
+                  path={route.path}
+                  element={
+                    <Layout pageName={namePage}>
+                      <Page />
+                    </Layout>
+                  }
+                  errorElement={
+                    <Layout pageName={namePage}>
+                      <Home />
+                    </Layout>
+                  }
+                />
+              );
             })}
           </Routes>
         </div>

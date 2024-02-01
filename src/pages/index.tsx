@@ -5,3 +5,4 @@ export { default as Home } from './Home';
 export { default as Profile } from './Profile';
 export { default as Profile_Bids } from './Profile_Bids';
 export { default as Profile_Created } from './Profile_Created';
+export { default as Profile_Follower } from './Profile_Follower';

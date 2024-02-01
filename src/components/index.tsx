@@ -7,3 +7,4 @@ export { default as BidInforRow } from './BidInforRow';
 export { default as NFTOnVoting } from './NFTOnVoting';
 export { default as SlideArea } from './SlideArea';
 export { default as UserRow } from './UserRow';
+export { default as UserFollow } from './UserFollow';

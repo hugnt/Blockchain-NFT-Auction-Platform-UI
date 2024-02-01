@@ -12,6 +12,7 @@ import "./Profile.css";
 import { TabBox } from "~/components";
 import Profile_Bids from "../Profile_Bids";
 import Profile_Created from "../Profile_Created";
+import Profile_Follower from "../Profile_Follower";
 const bannerStyle = {
   backgroundPosition: "50%",
   backgroundSize: "cover",
@@ -126,7 +127,7 @@ function Profile(props: StateProps) {
           </div>
         </div>
       </div>
-      <TabBox className="py-12" lstLabel={["Bids","Selling","Created", "Follower", "Following"]} lstComponent={[<Profile_Bids/>, <Profile_Bids/>,<Profile_Created />]}/>
+      <TabBox className="py-12" lstLabel={["Bids","Selling","Created", "Follower", "Following"]} lstComponent={[<Profile_Bids/>, <Profile_Bids/>,<Profile_Created />, <Profile_Follower />, <Profile_Follower />]}/>
     </div>
   );
 }

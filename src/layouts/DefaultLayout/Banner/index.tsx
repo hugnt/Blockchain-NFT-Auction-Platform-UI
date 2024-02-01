@@ -11,9 +11,10 @@ const bannerStyle = {
 
 interface BannerProps{
     isBannerEmpty?:Boolean;
+    pageName?:string;
 }
 export default function Banner(props: BannerProps) {
-  let {isBannerEmpty = false} = props;
+  let {isBannerEmpty = false, pageName=""} = props;
   return (
     <div id="banner" className="h-full relative">
       <img

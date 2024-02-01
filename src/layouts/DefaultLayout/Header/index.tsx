@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { StateProps, handleHeightNav } from '~/utils';
 import { ArrowFunction } from 'typescript';
 import { Dispatch } from 'redux';
+import { Link, NavLink } from 'react-router-dom';
 
 interface HeaderProps {
     navHeight: number | undefined;
@@ -31,11 +32,11 @@ function Header(props:HeaderProps) {
             </div>
             </div>
             <ul id="menu" className='flex justify-center '>
-            <li className='mx-3 menu-item' data-hover="Home">Home</li>
-            <li className='mx-3 menu-item' data-hover="Bidding">Bidding</li>
-            <li className='mx-3 menu-item' data-hover="Create">Create</li>
-            <li className='mx-3 menu-item' data-hover="Search">Search</li>
-            <li className='mx-3 menu-item flex justify-between items-center' data-hover="More">More &nbsp; <FaCaretDown color='white'/></li>
+            <NavLink to="/Home" className='mx-3 menu-item' data-hover="Home">Home</NavLink>
+            <NavLink to="/Bidding" className='mx-3 menu-item' data-hover="Bidding">Bidding</NavLink>
+            <NavLink to="/MintingAsset" className='mx-3 menu-item' data-hover="Create">Create</NavLink>
+            <NavLink to="/Search" className='mx-3 menu-item' data-hover="Search">Search</NavLink>
+            <NavLink to="/More" className='mx-3 menu-item flex justify-between items-center' data-hover="More">More &nbsp; <FaCaretDown color='white'/></NavLink>
             </ul>
             <div className='flex justify-end items-center w-3/12'>
             <div id="notification" className='rounded-full border border-white  bg-fog-1 p-1.5'>

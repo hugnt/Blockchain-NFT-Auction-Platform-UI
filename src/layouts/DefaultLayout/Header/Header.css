@@ -90,3 +90,16 @@
 	-webkit-transform: scaleX(1);
 	transform: scaleX(1)
 }
+
+.dropdown-zone::before{
+  content:"";
+  display:block;
+  position: absolute;
+  top: 0;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  transform: translateY(-50%) rotate(45deg);
+  z-index: 31;
+}

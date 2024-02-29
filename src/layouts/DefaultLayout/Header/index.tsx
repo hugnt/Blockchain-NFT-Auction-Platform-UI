@@ -21,6 +21,8 @@ import { ArrowFunction } from "typescript";
 import { Dispatch } from "redux";
 import { Link, NavLink } from "react-router-dom";
 
+//api
+import { lucid } from "~/apiServices/cardano/lucid";
 interface HeaderProps {
   navHeight: number | undefined;
   handleHeightNav: (height: number) => void;
@@ -31,6 +33,14 @@ function Header(props: HeaderProps) {
 
   let menuRef = useRef<HTMLDivElement>(null);
   let { navHeight, handleHeightNav } = props;
+
+  const  handleConnectWallet = async () =>{
+      const api = await window.cardano.nami.enable();
+      lucid.selectWallet(api);
+      const address = await lucid.wallet.address();
+      console.log(address);
+  }
+
   useEffect(() => {
     if (menuRef.current) {
       handleHeightNav(menuRef.current.offsetHeight);
@@ -120,7 +130,7 @@ function Header(props: HeaderProps) {
           </div>
           <div className="relative">
             <div
-              className="flex justify-between items-center rounded-[40px] bg-fog-1 px-4 py-1.5 border border-white"
+              className="flex justify-between items-center rounded-[40px] bg-fog-1 px-4 py-1.5 border border-white  hover:bg-purple-3"
               onClick={() => setActiveWallet(!activeWallet)}
             >
               Connect Wallet &nbsp;{" "}
@@ -128,33 +138,33 @@ function Header(props: HeaderProps) {
             </div>
             {activeWallet && (
               <div className="dropdown-zone  absolute z-30 top-[56px] right-0 bg-white text-purple-1 w-40 rounded-md">
-                <ul className="py-3 px-3">
-                  <li className="flex items-center mb-3">
+                <ul className="py-3 ">
+                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6" onClick={async () => handleConnectWallet()}>
                     <div className="h-5 w-5 overflow-hidden me-3">
                         <img src={nami} alt="" className="w-full h-full object-contain"/>
                     </div>
                     <div id="user-name">Nami</div>
                   </li>
-                  <li className="flex items-center mb-3">
+                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
                     <div className="h-5 w-5 overflow-hidden me-3">
                         <img src={eternl} alt="" className="w-full h-full object-contain"/>
                     </div>
                     <div id="user-name">Eternl</div>
                   </li>
-                  <li className="flex items-center mb-3">
+                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
                     <div className="h-5 w-5 overflow-hidden me-3">
                         <img src={flint} alt="" className="w-full h-full object-contain"/>
                     </div>
                     <div id="user-name">Flint</div>
                   </li>
-                  <li className="flex items-center mb-3">
+                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
                     <div className="h-5 w-5 overflow-hidden me-3">
                         <img src={lace} alt="" className="w-full h-full object-contain"/>
                     </div>
                     <div id="user-name">Lace</div>
                   </li>
-                  <li className="border-t my-4"></li>
-                  <li className="flex items-center">
+                  <li className="border-t my-2"></li>
+                  <li className="flex items-center px-3 hover:text-purple-6">
                     <MdOutlineRemoveRedEye  size="1.2em" className="me-3" />
                     <div id="user-name">View All</div>
                   </li>

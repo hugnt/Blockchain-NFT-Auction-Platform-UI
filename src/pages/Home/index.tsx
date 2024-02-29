@@ -73,7 +73,7 @@ export default function Home() {
           <UserRow className="" />
           <UserRow className="" />
           <UserRow className="" />
-          <UserRow className="iii" />
+          <UserRow className="" />
 
         </div>
       </div>

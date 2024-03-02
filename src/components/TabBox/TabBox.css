@@ -6,25 +6,39 @@
     
 }
 
-#page-tab .MuiButtonBase-root{
+.backBG .MuiButtonBase-root{
     color:rgba(255, 255, 255, 0.50)!important;
     font-family: 'Poppins', sans-serif !important;
     font-weight:600!important;
 }
+
+.whiteBG .MuiButtonBase-root{
+    color:rgba(12, 68, 93, 0.5)!important;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight:700!important;
+}
 #page-tab .MuiPaginationItem-root{
     color:#fff!important;
 }
-#page-tab .Mui-selected {
-    color:#fff!important;
-    
+
+.whiteBG .Mui-selected {
+    color:rgba(12, 68, 93, 1)!important;
 }
+.backBG .Mui-selected {
+    color:#fff!important;
+}
+
 #page-tab .MuiTab-root{
     font-family: 'Poppins', sans-serif !important;
 }
 #page-tab  .MuiTypography-root{
     font-family: 'Poppins', sans-serif !important;
 }
-#page-tab  .MuiBox-root{
+.backBG .MuiBox-root{
     border-color: rgba(255, 255, 255, 0.20)!important;
+    padding: 0!important;
+}
+.whiteBG .MuiBox-root{
+    border-color: rgba(12, 68, 93, 0.5)!important;
     padding: 0!important;
 }

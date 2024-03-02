@@ -3,6 +3,7 @@ import Header from './Header'
 import Banner from './Banner'
 import Footer from './Footer'
 import { Background } from '~/components'
+import ReelBox from './ReelBox'
 interface DefaultLayoutProps {
   children?: ReactNode;
   isBannerActive?:Boolean;
@@ -28,7 +29,9 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
         <div id="main" className='bg-transparent'>
             {<div className="">{props.children}</div>}
         </div>
+
         {!isNotFound&&<Footer/>}
+        {!isNotFound&&<ReelBox/>}
     </Background>
   )
 }

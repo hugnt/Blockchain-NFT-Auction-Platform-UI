@@ -16,6 +16,9 @@ interface PropsTab{
   lstComponent?:React.ReactNode[];
   lstLabel?: string[];
   className?:string;
+  whiteBG?:Boolean;
+  tabActive?:number;
+  handleClickReel?:(tabIndex: number) => void;
 }
 const theme = createTheme({
   palette: {
@@ -24,7 +27,7 @@ const theme = createTheme({
  
     },
     secondary: {
-      main: '#E0C2FF',
+      main: 'rgba(12, 68, 93, 1)',
       light: '#F5EBFF',
       // dark: will be calculated from palette.secondary.main,
       contrastText: '#47008F',
@@ -60,23 +63,28 @@ function a11yProps(index: number) {
 }
 
 export default function TabBox(props: PropsTab) {
-  let {lstComponent, lstLabel, className} = props;
-  const [value, setValue] = React.useState(0);
+  let {lstComponent, lstLabel, className, whiteBG = false, tabActive=0, handleClickReel} = props;
+  const [value, setValue] = React.useState(tabActive);
+
+  React.useEffect(() => {
+    setValue(tabActive);
+  },[tabActive]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    handleClickReel&&handleClickReel(newValue);
   };
 
   return (
-    <div id="page-tab" className={`${className}`}>
+    <div id="page-tab" className={`${className} ${whiteBG?'whiteBG':'backBG'}`}>
       <ThemeProvider theme={theme}>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider", maxWidth:"80rem", margin:"auto" }} >
             <Tabs
               value={value}
               onChange={handleChange}
-              textColor="primary"
-              indicatorColor="primary"
+              textColor={!whiteBG?"primary":"secondary"}
+              indicatorColor={!whiteBG?"primary":"secondary"}
               aria-label="basic tabs example"
               className=""
             >            

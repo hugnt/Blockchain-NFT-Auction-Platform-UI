@@ -23,6 +23,9 @@ import { Link, NavLink } from "react-router-dom";
 
 //api
 import { lucid } from "~/apiServices/cardano/lucid";
+import { Box, Collapse, Fade, Slide } from "@mui/material";
+import { Transition } from "~/components";
+import zIndex from "@mui/material/styles/zIndex";
 interface HeaderProps {
   navHeight: number | undefined;
   handleHeightNav: (height: number) => void;
@@ -32,13 +35,14 @@ function Header(props: HeaderProps) {
   let [activeWallet, setActiveWallet] = useState(false);
 
   let menuRef = useRef<HTMLDivElement>(null);
+  let containerRef = useRef<HTMLDivElement>(null);
   let { navHeight, handleHeightNav } = props;
 
-  const  handleConnectWallet = async () =>{
-      const api = await window.cardano.nami.enable();
-      lucid.selectWallet(api);
-      const address = await lucid.wallet.address();
-      console.log(address);
+  const handleConnectWallet = async () => {
+    //const api = await window.cardano.nami.enable();
+    //lucid.selectWallet(api);
+    //const address = await lucid.wallet.address();
+    //console.log(address);
   }
 
   useEffect(() => {
@@ -50,7 +54,7 @@ function Header(props: HeaderProps) {
     <div ref={menuRef} id="header-wrapper" className=" border-b border-fog-1">
       <div
         id="header"
-        className="flex justify-between items-center container max-w-7xl font-semibold cursor-pointer"
+        className=" flex justify-between items-center container max-w-7xl font-semibold cursor-pointer"
       >
         <div id="logo-wrapper" className="flex justify-start w-3/12">
           <div id="logo" className=" bg-purple-3 px-16 py-6">
@@ -93,7 +97,7 @@ function Header(props: HeaderProps) {
           >
             <IoNotifications size={"1.5em"} />
           </div>
-          <div id="user-zone" className="w-10 mx-3 relative font-medium">
+          <div id="user-zone" className="w-10 mx-3 relative font-medium z-30">
             <div
               id="user-avatar"
               className=" h-10 rounded-full overflow-hidden"
@@ -104,8 +108,8 @@ function Header(props: HeaderProps) {
                 className="w-full h-full object-cover object-center"
               />
             </div>
-            {activeUser && (
-              <div className="dropdown-zone absolute z-30 top-[57px] right-0 bg-white text-purple-1 w-48 rounded-md">
+            <Transition animation={"fadeMove"} isAppear={activeUser} timeout={400} direction="down" className="">
+              <div className="dropdown-zone absolute  mt-4 right-0 bg-white text-purple-1 w-48 rounded-md">
                 <ul className="py-3 px-3">
                   <li className="flex items-center mb-3">
                     <FaRegUser size="1.2em" className="me-3" />
@@ -126,51 +130,51 @@ function Header(props: HeaderProps) {
                   </li>
                 </ul>
               </div>
-            )}
+            </Transition>
           </div>
-          <div className="relative">
+          <div className="relative z-30" >
             <div
-              className="flex justify-between items-center rounded-[40px] bg-fog-1 px-4 py-1.5 border border-white  hover:bg-purple-3"
+              className=" flex justify-between items-center rounded-[40px] bg-fog-1 px-4 py-1.5 border border-white  hover:bg-purple-3"
               onClick={() => setActiveWallet(!activeWallet)}
             >
               Connect Wallet &nbsp;{" "}
               {activeWallet ? <FaCaretUp /> : <FaCaretDown />}
             </div>
-            {activeWallet && (
-              <div className="dropdown-zone  absolute z-30 top-[56px] right-0 bg-white text-purple-1 w-40 rounded-md">
+            <Transition animation={"fadeMove"} isAppear={activeWallet} timeout={400} direction="down" className="">
+              <div className="dropdown-zone absolute mt-4 right-0 bg-white text-purple-1 w-40 rounded-md">
                 <ul className="py-3 ">
                   <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6" onClick={async () => handleConnectWallet()}>
                     <div className="h-5 w-5 overflow-hidden me-3">
-                        <img src={nami} alt="" className="w-full h-full object-contain"/>
+                      <img src={nami} alt="" className="w-full h-full object-contain" />
                     </div>
                     <div id="user-name">Nami</div>
                   </li>
                   <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
                     <div className="h-5 w-5 overflow-hidden me-3">
-                        <img src={eternl} alt="" className="w-full h-full object-contain"/>
+                      <img src={eternl} alt="" className="w-full h-full object-contain" />
                     </div>
                     <div id="user-name">Eternl</div>
                   </li>
                   <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
                     <div className="h-5 w-5 overflow-hidden me-3">
-                        <img src={flint} alt="" className="w-full h-full object-contain"/>
+                      <img src={flint} alt="" className="w-full h-full object-contain" />
                     </div>
                     <div id="user-name">Flint</div>
                   </li>
                   <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
                     <div className="h-5 w-5 overflow-hidden me-3">
-                        <img src={lace} alt="" className="w-full h-full object-contain"/>
+                      <img src={lace} alt="" className="w-full h-full object-contain" />
                     </div>
                     <div id="user-name">Lace</div>
                   </li>
                   <li className="border-t my-2"></li>
                   <li className="flex items-center px-3 hover:text-purple-6">
-                    <MdOutlineRemoveRedEye  size="1.2em" className="me-3" />
+                    <MdOutlineRemoveRedEye size="1.2em" className="me-3" />
                     <div id="user-name">View All</div>
                   </li>
                 </ul>
               </div>
-            )}
+            </Transition>
           </div>
         </div>
       </div>

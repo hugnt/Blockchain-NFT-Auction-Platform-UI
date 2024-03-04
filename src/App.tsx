@@ -16,6 +16,7 @@ import { reducer } from "./utils";
 //routes
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoutes } from "./routes";
+import { Loading } from "./components";
 
 const store = createStore(reducer);
 

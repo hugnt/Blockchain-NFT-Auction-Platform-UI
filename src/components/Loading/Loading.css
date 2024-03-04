@@ -1,0 +1,7 @@
+#loadingContent{
+    -webkit-box-shadow: 0 0 32px 32px rgba(162, 89, 255, 0.2);
+-moz-box-shadow: 0 0 32px 32px rgba(162, 89, 255, 0.2);
+box-shadow: 0 0 32px 32px rgba(162, 89, 255, 0.2);
+    background-color:rgba(162, 89, 255, 0.2);
+    
+}

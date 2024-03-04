@@ -1,3 +1,6 @@
+import { Lucid } from "lucid-cardano";
+
 export interface StateProps{
-    navHeight?:number
+    navHeight?:number,
+    lucid:Lucid
 }

@@ -8,3 +8,7 @@
     }
   
 }
+
+.Toastify__toast-container--top-right {
+    top: 5rem !important;
+  }

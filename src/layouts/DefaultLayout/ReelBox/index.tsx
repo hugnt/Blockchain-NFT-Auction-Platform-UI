@@ -79,23 +79,25 @@ export default function ReelBox() {
   };
 
   return (
-    <div className="flex" id="reelbox">
+    <div className="">
 
-      <Transition animation={"fadeMove"} isAppear={displayReel} timeout={400} direction="up" className="">
-        <Box id="reelTab" >
-          <TabBox
-            tabActive={tabActive}
-            handleClickReel={handleClickReel}
-            whiteBG={true}
-            className="w-[25rem] drop-shadow-xl bottom-2 bg-white rounded-lg px-6 pb-4 pt-2"
-            lstComponent={lstComponent}
-            lstLabel={["Bidding", "Voted", "Likes"]}
-          />
-        </Box>
-      </Transition>
+      <div id="reelTab" className={`${displayReel&&'z-10'}`}>
+        <Transition animation={"fadeMove"} isAppear={displayReel} timeout={400} direction="up" className="">
+          <Box>
+            <TabBox
+              tabActive={tabActive}
+              handleClickReel={handleClickReel}
+              whiteBG={true}
+              className="w-[25rem] drop-shadow-xl bottom-2 bg-white rounded-lg px-6 pb-4 pt-2"
+              lstComponent={lstComponent}
+              lstLabel={["Bidding", "Voted", "Likes"]}
+            />
+          </Box>
+        </Transition>
+      </div>
 
 
-      <div className="flex flex-col justify-end ms-4">
+      <div id="reelbox" className="flex flex-col justify-end ms-4">
         <div
           className="w-14 h-14 border-2 border-white rounded-full p-2.5 bg-fog-3 hover:bg-purple-3 *:hover:scale-125 overflow-hidden"
           id="bidBox"

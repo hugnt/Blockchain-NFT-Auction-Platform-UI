@@ -2,5 +2,23 @@ import { Lucid } from "lucid-cardano";
 
 export interface StateProps{
     navHeight?:number,
-    lucid:Lucid
+    lucid:Lucid,
+    account: Account
+}
+
+export interface Account {
+    id:number;
+    walletAddress: string;
+    name?: string;
+    email?: string;
+    address?: string;
+    description?: string;
+    avatar?: string;
+    cover?: string;
+    followers?: number;
+    following?: number;
+    facebook?: string;
+    youtube?: string;
+    twitter?: string;
+    telegram?: string;
 }

@@ -11,14 +11,12 @@ import {
   Profile,
   MintingAsset,
 } from "./pages";
-import { createStore } from "redux";
-import { reducer } from "./utils";
+import { store } from "./utils/store/store"; 
 //routes
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoutes } from "./routes";
 import { Loading } from "./components";
 
-const store = createStore(reducer);
 
 
 function App() {

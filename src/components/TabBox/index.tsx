@@ -48,7 +48,7 @@ function CustomTabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -90,7 +90,7 @@ export default function TabBox(props: PropsTab) {
             >            
               {
                 lstLabel?.map((x, i)=>(
-                  <Tab label={x} {...a11yProps(i)} />
+                  <Tab key={i} label={x} {...a11yProps(i)} />
                 ))
               }
             </Tabs>

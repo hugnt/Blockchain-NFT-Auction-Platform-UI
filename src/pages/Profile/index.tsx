@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import banner2 from "~/assets/images/nft/nft6.png";
 import user from "~/assets/images/nft/user.png";
-import { connect } from "react-redux";
-import { StateProps } from "~/utils";
+
 import { FaRegCopy } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaFacebookF, FaYoutube, FaTwitter, FaTelegramPlane  } from "react-icons/fa";
@@ -13,6 +12,16 @@ import { TabBox } from "~/components";
 import Profile_Bids from "../Profile_Bids";
 import Profile_Created from "../Profile_Created";
 import Profile_Follower from "../Profile_Follower";
+import { useAppDispatch, useAppSelector } from "~/utils/store/store";
+
+//be
+import { GET_IMAGE } from "~/apiServices/utils/request";
+import { Account } from "~/utils";
+import { getAccount } from "~/apiServices/backend";
+import { useParams } from "react-router-dom";
+import { handle404 } from "~/utils/store/features/uiSlice";
+import NotFound from "../NotFound";
+
 const bannerStyle = {
   backgroundPosition: "50%",
   backgroundSize: "cover",
@@ -21,10 +30,13 @@ const bannerStyle = {
     "linear-gradient(180deg, rgba(162, 89, 255, 0.00) 59.67%, #A259FF 100%)",
 };
 
-function Profile(props: StateProps) {
-  let { navHeight } = props;
+export default  function Profile() {
   const [bannerZone, setBannerZone] = useState(665);
-
+  const [account, setAccount] = useState<Account>(null!);
+  const navHeight = useAppSelector((state)=>state.ui.navHeight);
+  const { id } = useParams();
+  const dispatch = useAppDispatch();
+  const isNotFound = useAppSelector((state)=>state.ui.isNotFound);
   useEffect(() => {
     const handleResize = () => {
       if (navHeight) setBannerZone(window.innerHeight - navHeight);
@@ -37,6 +49,26 @@ function Profile(props: StateProps) {
       window.removeEventListener("resize", handleResize);
     };
   }, [navHeight]);
+
+  useEffect(()=>{
+    
+      async function fetchAccount(){
+        try {
+          const sellectedAccount = await getAccount(Number(id));
+          console.log(sellectedAccount);
+          if(sellectedAccount==null) throw new Error("Server is not responding");
+          setAccount(sellectedAccount);
+        } catch (error) {
+            console.log(error);
+            dispatch(handle404({isNotFound:true}));
+        }
+        finally{
+  
+        }
+      }
+      fetchAccount();
+      
+  },[id]);
 
   return (
     <div>
@@ -132,7 +164,3 @@ function Profile(props: StateProps) {
   );
 }
 
-const mapStateToProps = (state: StateProps) => ({
-  navHeight: state.navHeight,
-});
-export default connect(mapStateToProps)(Profile);

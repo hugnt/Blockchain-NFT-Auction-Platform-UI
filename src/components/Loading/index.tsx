@@ -1,4 +1,4 @@
-import { Box, Modal, Typography } from '@mui/material';
+import { Box, Modal } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import cardano from "~/assets/images/icon/cardano2.png";
 import './Loading.css'

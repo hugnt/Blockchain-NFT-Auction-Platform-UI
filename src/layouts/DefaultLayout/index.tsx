@@ -4,17 +4,14 @@ import Banner from './Banner'
 import Footer from './Footer'
 import { Background, Loading } from '~/components'
 import ReelBox from './ReelBox'
-//redux
-import { connect } from "react-redux";
-import { StateProps, handleLucid } from "~/utils";
-import { Dispatch } from "redux";
+
 
 //Lucid
 import { connectLucid } from '~/apiServices/cardano/lucid';
 import { Lucid } from 'lucid-cardano'
 import { handleChangeLucid } from '~/utils/store/features/lucidSlice'
 import { useAppDispatch, useAppSelector } from '~/utils/store/store'
-import { handle404 } from '~/utils/store/features/uiSlice'
+import { handle404, handleLoading } from '~/utils/store/features/uiSlice'
 import { NotFound } from '~/pages'
 
 interface DefaultLayoutProps {
@@ -26,7 +23,7 @@ interface DefaultLayoutProps {
 
 //var isNotFound = false;
 export default function DefaultLayout(props:DefaultLayoutProps) {
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
   let {isBannerActive=true, isBannerEmpty=false, pageName=""} = props;
   if(pageName=="BiddingDetails"||pageName=="MintingAsset"||pageName=="Profile"){
     isBannerActive = false;
@@ -34,6 +31,7 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
 
   const dispatch = useAppDispatch();
   const isNotFound = useAppSelector((state)=>state.ui.isNotFound);
+  const loading = useAppSelector((state)=>state.ui.loading);
 
   //dispatch(handle404({isNotFound:false}));
   if(pageName=="NotFound") dispatch(handle404({isNotFound:true}));
@@ -42,7 +40,7 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
  
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      dispatch(handleLoading({loading: true}));
       try {
         const lucidInstance = await connectLucid();
         //console.log(lucidInstance)
@@ -52,7 +50,7 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
     
         console.error('Lỗi khi fetch dữ liệu:', error);
       } finally {
-        setLoading(false);
+        dispatch(handleLoading({loading: false}));
       }
     };
     fetchData();
@@ -67,7 +65,7 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
             {isBannerActive&&<Banner isBannerEmpty={isBannerEmpty} pageName={pageName}/>}     
         </div>}
         <div id="main" className='bg-transparent'>
-            {!isNotFound?<div className="">{props.children}</div>:<NotFound/>}
+            {!isNotFound?<div className="z-10 relative">{props.children}</div>:<NotFound/>}
         </div>
 
         {!isNotFound&&<Footer/>}

@@ -22,8 +22,8 @@ export default function Banner(props: BannerProps) {
         className="w-full h-full object-cover object-center relative"
       />
       <div className="absolute inset-0 bg-fog-3"></div>
-      <div className="absolute inset-0 z-10" style={bannerStyle}></div>
-      {!isBannerEmpty&&<div className="absolute right-0 z-20 left-0 bottom-0 top-3/4 container max-w-7xl">
+      <div className="absolute inset-0 z-8" style={bannerStyle}></div>
+      {!isBannerEmpty&&<div className="absolute right-0 z-9 left-0 bottom-0 top-3/4 container max-w-7xl">
         <div className="flex justify-between items-center">
           <div className="text-3xl">
             <p>Explore NFT on Auction, bid, buy, sell</p>

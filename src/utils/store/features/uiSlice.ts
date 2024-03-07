@@ -3,10 +3,12 @@ import { createSlice, PayloadAction} from "@reduxjs/toolkit";
 interface UIState{
     navHeight: number;
     isNotFound: boolean;
+    loading: boolean;
 }
 const initialState: UIState = {
     navHeight:0,
-    isNotFound: false
+    isNotFound: false,
+    loading: false
 }
 
 export const uiSlice = createSlice({
@@ -19,7 +21,10 @@ export const uiSlice = createSlice({
         handle404: (state, action: PayloadAction<{ isNotFound: boolean }>) => {
             state.isNotFound = action.payload.isNotFound;
         },
+        handleLoading: (state, action: PayloadAction<{ loading: boolean }>) => {
+            state.loading = action.payload.loading;
+        },
     }
 })
 export default uiSlice.reducer;
-export const {handleChangeUI, handle404} = uiSlice.actions;
+export const {handleChangeUI, handle404, handleLoading} = uiSlice.actions;

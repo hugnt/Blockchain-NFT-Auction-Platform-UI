@@ -4,8 +4,9 @@ import user from "~/assets/images/nft/user.png";
 
 import { FaRegCopy } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { FaFacebookF, FaYoutube, FaTwitter, FaTelegramPlane  } from "react-icons/fa";
+import { FaFacebookF, FaYoutube, FaTwitter, FaTelegramPlane } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
+import { BsCopy } from "react-icons/bs";
 
 import "./Profile.css";
 import { TabBox } from "~/components";
@@ -16,10 +17,10 @@ import { useAppDispatch, useAppSelector } from "~/utils/store/store";
 
 //be
 import { GET_IMAGE } from "~/apiServices/utils/request";
-import { Account } from "~/utils";
+import { Account, handleCopy } from "~/utils";
 import { getAccount } from "~/apiServices/backend";
 import { useParams } from "react-router-dom";
-import { handle404 } from "~/utils/store/features/uiSlice";
+import { handle404, handleLoading } from "~/utils/store/features/uiSlice";
 import NotFound from "../NotFound";
 
 const bannerStyle = {
@@ -30,13 +31,14 @@ const bannerStyle = {
     "linear-gradient(180deg, rgba(162, 89, 255, 0.00) 59.67%, #A259FF 100%)",
 };
 
-export default  function Profile() {
+export default function Profile() {
   const [bannerZone, setBannerZone] = useState(665);
   const [account, setAccount] = useState<Account>(null!);
-  const navHeight = useAppSelector((state)=>state.ui.navHeight);
+  const navHeight = useAppSelector((state) => state.ui.navHeight);
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const isNotFound = useAppSelector((state)=>state.ui.isNotFound);
+  const accountStore = useAppSelector((state)=>state.account.account);
+
   useEffect(() => {
     const handleResize = () => {
       if (navHeight) setBannerZone(window.innerHeight - navHeight);
@@ -50,35 +52,36 @@ export default  function Profile() {
     };
   }, [navHeight]);
 
-  useEffect(()=>{
-    
-      async function fetchAccount(){
-        try {
-          const sellectedAccount = await getAccount(Number(id));
-          console.log(sellectedAccount);
-          if(sellectedAccount==null) throw new Error("Server is not responding");
-          setAccount(sellectedAccount);
-        } catch (error) {
-            console.log(error);
-            dispatch(handle404({isNotFound:true}));
-        }
-        finally{
-  
-        }
+  useEffect(() => {
+
+    async function fetchAccount() {
+      try {
+        dispatch(handleLoading({ loading: true }));
+        const sellectedAccount = await getAccount(Number(id));
+        console.log(sellectedAccount);
+        if (sellectedAccount == null) throw new Error("Server is not responding");
+        setAccount(sellectedAccount);
+      } catch (error) {
+        console.log(error);
+        dispatch(handle404({ isNotFound: true }));
       }
-      fetchAccount();
-      
-  },[id]);
+      finally {
+        dispatch(handleLoading({ loading: false }));
+      }
+    }
+    fetchAccount();
+
+  }, [id]);
 
   return (
     <div>
       <div
         id="profile-banner"
-        style={{ height: `${bannerZone *60/100}px` }}
+        style={{ height: `${bannerZone * 60 / 100}px` }}
         className={`relative`}
       >
         <img
-          src={banner2}
+          src={account && account.cover && GET_IMAGE(account.cover)}
           className="w-full h-full object-cover object-center relative"
         />
         <div className="absolute inset-0 bg-fog-3"></div>
@@ -88,7 +91,7 @@ export default  function Profile() {
         <div id="area-profile" className="absolute inset-0"></div>
         <div
           id="profile-pre"
-          style={{ height: `${bannerZone*40/100}px` }}
+          style={{ height: `${bannerZone * 40 / 100}px` }}
           className="container max-w-7xl relative flex justify-between"
         >
           <div className="w-8/12">
@@ -99,17 +102,20 @@ export default  function Profile() {
                 style={{ marginTop: "-6.5rem" }}
               >
                 <img
-                  src={user}
+                  src={account && account.avatar && GET_IMAGE(account.avatar)}
                   alt=""
                   className="w-full h-full object-cover object-center"
                 />
               </div>
               <div
                 id="profile-wallet-address"
-                className="flex text-xl mt-3 ms-5"
+                className="flex text-xl mt-3 ms-5 w-96 items-center h-10"
               >
-                Ox465d53...9df5&nbsp;&nbsp;
-                <FaRegCopy size={"1.1em"} />
+                <div className="w-full text-ellipsis overflow-hidden">{account && account.walletAddress}</div>
+                &nbsp;&nbsp;
+                <div className="cursor-pointer rounded-full border border-white p-2 hover:scale-110 hover:bg-purple-4 hover:text-green-500" onClick={()=>{handleCopy(account.walletAddress)}}>
+                  <BsCopy size={"1.2em"} className="" />
+                </div>
               </div>
             </div>
             <p id="profile-desc" className="text-justify my-6">
@@ -142,24 +148,24 @@ export default  function Profile() {
               </div>
             </div>
             <ul className="flex justify-between items-center my-6">
-                <li className="border border-white p-2 rounded-lg bg-fog-1 me-3">
-                  <FaFacebookF size={"1.5rem"} color="white" />
-                </li>
-                <li className="border border-white p-2 rounded-lg bg-fog-1 me-3">
-                  <FaYoutube size={"1.5rem"} color="white" />
-                </li>
-                <li className="border border-white p-2 rounded-lg bg-fog-1 me-3">
-                  <FaTwitter size={"1.5rem"} color="white" />
-                </li>
-                <li className="border border-white p-2 rounded-lg bg-fog-1">
-                  <FaTelegramPlane size={"1.5rem"} color="white" />
-                </li>
-              </ul>
-              <button className="w-full rounded-lg bg-fog-1 py-1.5 border border-fog-2">Follow</button>
+              <li className="border border-white p-2 rounded-lg bg-fog-1 me-3">
+                <FaFacebookF size={"1.5rem"} color="white" />
+              </li>
+              <li className="border border-white p-2 rounded-lg bg-fog-1 me-3">
+                <FaYoutube size={"1.5rem"} color="white" />
+              </li>
+              <li className="border border-white p-2 rounded-lg bg-fog-1 me-3">
+                <FaTwitter size={"1.5rem"} color="white" />
+              </li>
+              <li className="border border-white p-2 rounded-lg bg-fog-1">
+                <FaTelegramPlane size={"1.5rem"} color="white" />
+              </li>
+            </ul>
+            <button className="w-full rounded-lg bg-fog-1 py-1.5 border border-fog-2">{accountStore&&(accountStore.walletAddress==account.walletAddress)?"Edit profile":"Follow"}</button>
           </div>
         </div>
       </div>
-      <TabBox className="py-12" lstLabel={["Bids","Selling","Created", "Follower", "Following"]} lstComponent={[<Profile_Bids/>, <Profile_Bids/>,<Profile_Created />, <Profile_Follower />, <Profile_Follower />]}/>
+      <TabBox className="py-12" lstLabel={["Bids", "Selling", "Created", "Follower", "Following"]} lstComponent={[<Profile_Bids />, <Profile_Bids />, <Profile_Created />, <Profile_Follower />, <Profile_Follower />]} />
     </div>
   );
 }

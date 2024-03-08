@@ -161,7 +161,7 @@ export default function Profile() {
                 <FaTelegramPlane size={"1.5rem"} color="white" />
               </li>
             </ul>
-            <button className="w-full rounded-lg bg-fog-1 py-1.5 border border-fog-2">{accountStore&&(accountStore.walletAddress==account.walletAddress)?"Edit profile":"Follow"}</button>
+            <button className="w-full rounded-lg bg-fog-1 py-1.5 border border-fog-2">{account&&accountStore&&(accountStore.walletAddress==account.walletAddress)?"Edit profile":"Follow"}</button>
           </div>
         </div>
       </div>

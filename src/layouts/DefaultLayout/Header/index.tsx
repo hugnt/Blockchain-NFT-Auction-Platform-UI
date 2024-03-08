@@ -19,10 +19,7 @@ import wallet from "~/assets/images/icon/wallet.png";
 
 import "./Header.css";
 //redux
-import { connect } from "react-redux";
-import { Account, StateProps } from "~/utils";
-import { ArrowFunction } from "typescript";
-import { Dispatch } from "redux";
+import { Account,  } from "~/utils";
 import { Link, NavLink } from "react-router-dom";
 
 //Toast 
@@ -30,42 +27,38 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 //api
-import { Box, Collapse, Fade, Slide, Tooltip, adaptV4Theme } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { Loading, Transition } from "~/components";
-import zIndex from "@mui/material/styles/zIndex";
-import { Lucid, UTxO } from "lucid-cardano";
+import { UTxO } from "lucid-cardano";
 
 //be
 import { loginAccount } from "~/apiServices/backend";
 import { GET_IMAGE } from "~/apiServices/utils/request";
 import { useAppDispatch, useAppSelector } from "~/utils/store/store";
 import { handleChangeAccount } from "~/utils/store/features/accountSlice";
-import { handleChangeUI } from "~/utils/store/features/uiSlice";
-interface HeaderProps {
-  
-}
+import { handleChangeUI, handleLoading } from "~/utils/store/features/uiSlice";
 
 export default function Header() {
 
   let [activeUser, setActiveUser] = useState(false);
   let [activeWallet, setActiveWallet] = useState(false);
   let [isConnectWallet, setIsConnectWallet] = useState(false);
-  let [loading, setLoading] = useState(false);
   const [address, setAddress] = useState<string>('');
   const [utxos, setUTxOs] = useState<UTxO[]>([]);
   const [refreshWallet, setRefreshWallet] = useState<boolean>(false);
 
   let menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-
+  const accountStore = useAppSelector((state)=>state.account.account);
   const lucid = useAppSelector((state)=>state.lucid.lucid);
+  const loading = useAppSelector((state)=>state.ui.loading);
   //let accountStore = useAppSelector((state)=>state.account.account);
 
   let [account, setAccount] = useState<Account>(null!);
   const handleConnectWallet = async () => {
     try {
       setActiveWallet(false);
-      setLoading(true);
+      dispatch(handleLoading({loading:true}));
 
       const api = await window.cardano.nami.enable();
       lucid.selectWallet(api);
@@ -86,14 +79,14 @@ export default function Header() {
         position: "top-right"
       });
     } finally {
-      setLoading(false); 
+      dispatch(handleLoading({loading:false}));
     }
 
   }
 
   const handleDisconnectWallet = async () => {
     try {
-      setLoading(true);
+      dispatch(handleLoading({loading:true}));
       setActiveWallet(false);
       lucid.selectWallet(null!);
       
@@ -107,7 +100,7 @@ export default function Header() {
         position: "top-right"
       });
     } finally {
-      setLoading(false); 
+      dispatch(handleLoading({loading:false}));
     }
 
   }
@@ -116,7 +109,7 @@ export default function Header() {
   useEffect(() => {
     async function checkAlreadyConnectWallet(){
       setActiveWallet(false);
-      setLoading(true);
+      dispatch(handleLoading({loading:true}));
 
       const isNamiConnected = await window.cardano.nami.isEnabled();
       if(lucid==null||!isNamiConnected) return;
@@ -129,19 +122,21 @@ export default function Header() {
       setAccount(resAccount as Account);
 
       setIsConnectWallet(true);
-      toast.success("Connected wallet!", {
+      toast.success("Reconnected wallet!", {
         position: "top-right",
         
       });
     }
     try {
-      checkAlreadyConnectWallet();
+      if(accountStore&&lucid){
+        checkAlreadyConnectWallet();
+      }
     } catch (error) {
         toast.error("Connecting Server failed", {
         position: "top-right"
       });
     } finally {
-      setLoading(false); 
+      dispatch(handleLoading({loading:false}));
     }
 
     

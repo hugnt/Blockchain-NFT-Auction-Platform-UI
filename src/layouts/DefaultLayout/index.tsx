@@ -59,17 +59,22 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
   return (
     <Background>
         <Loading isOpen={loading} />
-
-        {!isNotFound&&<div className={`${isBannerActive&&'h-screen overflow-hidden'}`}>
-            <Header />
-            {isBannerActive&&<Banner isBannerEmpty={isBannerEmpty} pageName={pageName}/>}     
+        {isNotFound&&<div id="main" className='bg-transparent'>
+            <NotFound/>
         </div>}
-        <div id="main" className='bg-transparent'>
-            {!isNotFound?<div className="z-10 relative">{props.children}</div>:<NotFound/>}
-        </div>
-
-        {!isNotFound&&<Footer/>}
-        {!isNotFound&&<ReelBox/>}
+        {!isNotFound&&
+        <Fragment>
+          <div className={`${isBannerActive&&'h-screen overflow-hidden'}`}>
+              <Header />
+              {isBannerActive&&<Banner isBannerEmpty={isBannerEmpty} pageName={pageName}/>}     
+          </div>
+           <div id="main" className='bg-transparent'>
+                <div className="z-10 relative">{props.children}</div>
+          </div>
+          <Footer/>
+          <ReelBox/>
+        </Fragment>
+        }
     </Background>
   )
 }

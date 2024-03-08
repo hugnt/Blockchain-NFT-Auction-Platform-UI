@@ -11,3 +11,4 @@ export { default as UserFollow } from './UserFollow';
 export { default as Transition } from './Transition';
 export { default as Loading } from './Loading';
 export { default as Error } from './Error';
+export { default as MetadataProperty } from './MetadataProperty';

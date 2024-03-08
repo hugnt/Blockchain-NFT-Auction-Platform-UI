@@ -5,6 +5,18 @@ export interface StateProps{
     lucid:Lucid,
     account: Account
 }
+export interface MetadataObject{
+    key?:string;
+    value?:string;
+}
+
+export interface NFTMintInfor{
+    fileURL?: string | null;
+    title?:string;
+    mediaType?:string;
+    desc?:string;
+    metadata?:MetadataObject[];
+};
 
 export interface Account {
     id:number;

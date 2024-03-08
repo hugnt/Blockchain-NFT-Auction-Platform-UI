@@ -1,0 +1,18 @@
+#voteNumber{
+    text-shadow: 0px 0px 29px rgba(255,0,0,1);
+}
+#nftModal{
+
+    box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+    -webkit-box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+    -moz-box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+}
+#modal-top{
+    background: #000000;
+background: linear-gradient(180deg,#000000 20%, rgba(50,26,78,0.88) 110%);
+background: -webkit-linear-gradient(180deg,#000000 20%, rgba(50,26,78,0.88) 110%);
+background: -moz-linear-gradient(180deg,#000000 20%, rgba(50,26,78,0.88) 110%);
+    box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+    -webkit-box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+    -moz-box-shadow: 0px 3px 19px -8px rgba(255,255,255,0.75);
+}

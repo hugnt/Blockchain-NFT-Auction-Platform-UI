@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ReactNode } from "react";
 import "./App.css";
 import { Provider } from "react-redux";
@@ -11,18 +11,39 @@ import {
   Profile,
   MintingAsset,
 } from "./pages";
-import { store } from "./utils/store/store"; 
+import { store, useAppDispatch } from "./utils/store/store"; 
 //routes
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoutes } from "./routes";
 import { Loading } from "./components";
+import { handleLoading } from "./utils/store/features/uiSlice";
+import { handleChangeLucid } from "./utils/store/features/lucidSlice";
+import { connectLucid } from "./apiServices/cardano/lucid";
 
 
 
 function App() {
+  const dispatch = useAppDispatch();
   
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(handleLoading({loading: true}));
+      try {
+        const lucidInstance = await connectLucid();
+        //console.log(lucidInstance)
+        dispatch(handleChangeLucid({lucid: lucidInstance}));
+        
+      } catch (error) {
+    
+        console.error('Lỗi khi fetch dữ liệu:', error);
+      } finally {
+        dispatch(handleLoading({loading: false}));
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
-    <Provider store={store}>
       <Router>
         <div className="App">
           <Routes>
@@ -50,7 +71,6 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </Provider>
   );
 }
 

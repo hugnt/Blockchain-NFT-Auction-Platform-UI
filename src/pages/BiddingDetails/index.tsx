@@ -148,12 +148,12 @@ export default function BiddingDetails() {
         </div>
         <SlideHaft
           lstComponent={[
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
           ]}
         />
       </div>

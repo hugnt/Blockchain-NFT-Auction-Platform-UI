@@ -179,7 +179,6 @@ export default function Header() {
 
   return (
     <div ref={menuRef} id="header-wrapper" className=" border-b border-fog-1">
-      <Loading isOpen={loading} />
       <ToastContainer autoClose={2000}/>
       <div
         id="header"

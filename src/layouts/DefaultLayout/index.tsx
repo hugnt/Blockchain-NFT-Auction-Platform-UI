@@ -2,13 +2,12 @@ import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import Header from './Header'
 import Banner from './Banner'
 import Footer from './Footer'
-import { Background, Loading } from '~/components'
+import { Background, Loading, NFTModal } from '~/components'
 import ReelBox from './ReelBox'
-
+import { useLocation } from "react-router-dom";
 
 //Lucid
 import { connectLucid } from '~/apiServices/cardano/lucid';
-import { Lucid } from 'lucid-cardano'
 import { handleChangeLucid } from '~/utils/store/features/lucidSlice'
 import { useAppDispatch, useAppSelector } from '~/utils/store/store'
 import { handle404, handleLoading } from '~/utils/store/features/uiSlice'
@@ -21,40 +20,31 @@ interface DefaultLayoutProps {
   pageName?:string;
 }
 
-//var isNotFound = false;
 export default function DefaultLayout(props:DefaultLayoutProps) {
-  //const [loading, setLoading] = useState(false);
-  let {isBannerActive=true, isBannerEmpty=false, pageName=""} = props;
-  if(pageName=="BiddingDetails"||pageName=="MintingAsset"||pageName=="Profile"){
-    isBannerActive = false;
-  }
 
+  let {isBannerActive=true, isBannerEmpty=false, pageName=""} = props;
+  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const isNotFound = useAppSelector((state)=>state.ui.isNotFound);
   const loading = useAppSelector((state)=>state.ui.loading);
 
-  //dispatch(handle404({isNotFound:false}));
-  if(pageName=="NotFound") dispatch(handle404({isNotFound:true}));
-  else if((pageName!="NotFound")&&!(isNotFound&&pageName=="Profile")) dispatch(handle404({isNotFound:false}));
+  if(pageName=="BiddingDetails"||pageName=="MintingAsset"||pageName=="Profile"){
+    isBannerActive = false;
+  }
+  
 
- 
+  useEffect(()=>{
+    if(pageName=="NotFound") dispatch(handle404({isNotFound:true}));
+    else if((pageName!="NotFound")&&!(isNotFound&&pageName=="Profile")) dispatch(handle404({isNotFound:false}));
+  
+   
+  }, [isNotFound, pageName])
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch(handleLoading({loading: true}));
-      try {
-        const lucidInstance = await connectLucid();
-        //console.log(lucidInstance)
-        dispatch(handleChangeLucid({lucid: lucidInstance}));
-        
-      } catch (error) {
-    
-        console.error('Lỗi khi fetch dữ liệu:', error);
-      } finally {
-        dispatch(handleLoading({loading: false}));
-      }
-    };
-    fetchData();
-  }, []);
+    window.scrollTo(0, 0);
+    console.log(pathname)
+  }, [pathname]);
 
   return (
     <Background>
@@ -75,6 +65,7 @@ export default function DefaultLayout(props:DefaultLayoutProps) {
           <ReelBox/>
         </Fragment>
         }
+        
     </Background>
   )
 }

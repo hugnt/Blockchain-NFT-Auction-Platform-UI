@@ -64,6 +64,7 @@ export default function Profile() {
       } catch (error) {
         console.log(error);
         dispatch(handle404({ isNotFound: true }));
+        return
       }
       finally {
         dispatch(handleLoading({ loading: false }));

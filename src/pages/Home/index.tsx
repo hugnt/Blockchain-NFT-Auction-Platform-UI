@@ -1,11 +1,13 @@
 import React from "react";
-import { NFT, UserRow } from "~/components";
+import { NFT, NFTModal, UserRow } from "~/components";
 import NFTCategory from "~/components/NFTCategory";
 import SlideHaft from "~/components/SlideArea";
 
 export default function Home() {
+  
   return (
     <div className="py-12">
+       
       <div id="nft-category">
         <div className="text-3xl font-semibold text-center mb-12">
           NFT Category
@@ -27,33 +29,33 @@ export default function Home() {
       </div>
       <div id="area-onauction" className="my-12 mt-24">
         <div className="container max-w-7xl flex items-center mb-8">
-          <span className="font-semibold text-3xl">List NFT on Auction</span>
+          <span className="font-semibold text-3xl">NFTs on Voting</span>
         </div>
         <SlideHaft
          className ="onauction"
           lstComponent={[
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
-            <NFT isShowShort={true} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
+            <NFT onBidding={false} />,
           ]}
         />
       </div>
       <div id="area-onbidding" className="my-12 mt-24">
         <div className="container max-w-7xl flex items-center mb-8">
-          <span className="font-semibold text-3xl">Biding on Auction</span>
+          <span className="font-semibold text-3xl">NFTs on Bidding</span>
         </div>
         <SlideHaft
          className ="onbidding"
           lstComponent={[
-            <NFT isShowShort={false} />,
-            <NFT isShowShort={false} />,
-            <NFT isShowShort={false} />,
-            <NFT isShowShort={false} />,
-            <NFT isShowShort={false} />,
-            <NFT isShowShort={false} />,
+            <NFT onBidding={true} />,
+            <NFT onBidding={true} />,
+            <NFT onBidding={true} />,
+            <NFT onBidding={true} />,
+            <NFT onBidding={true} />,
+            <NFT onBidding={true} />,
           ]}
         />
       </div>

@@ -34,7 +34,7 @@ export default function VotingDetails() {
         <div className="container max-w-7xl flex items-center mb-12">
           <span className="font-semibold text-2xl">List NFT on  Auction</span>
         </div>
-        <SlideHaft lstComponent={[<NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>, <NFT isShowShort={true}/>]}/>
+        <SlideHaft lstComponent={[<NFT onBidding={false}/>, <NFT onBidding={false}/>, <NFT onBidding={false}/>, <NFT onBidding={false}/>, <NFT onBidding={false}/>, <NFT onBidding={false}/>]}/>
       </div>
     </div>
   );

@@ -114,14 +114,14 @@ export default function Profile_Created() {
       id="area-bidding-list"
       className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
     >
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
-      <NFT isShowShort={true}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
+      <NFT onBidding={false}/>
     </div>
     <div
       id="area-pagination"

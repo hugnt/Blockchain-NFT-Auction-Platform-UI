@@ -90,7 +90,7 @@ export default function NFTModal(props: NFTModalProps) {
                     </div>
                     <div className='mt-10 grid gap-2 grid-cols-4 px-10'>
                         <button className="rounded-lg bg-fog-1 py-1.5 border border-fog-2">Vote</button>
-                        <button className="rounded-lg bg-fog-1 py-1.5 border border-fog-2">Use BackGround</button>
+                        <button className="rounded-lg bg-fog-1 py-1.5 border border-fog-2">Set Background</button>
                         <button className="rounded-lg bg-fog-1 py-1.5 border border-fog-2">Download Image</button>
                         <button className="rounded-lg bg-fog-1 py-1.5 border border-fog-2">Follow</button>
                     </div>

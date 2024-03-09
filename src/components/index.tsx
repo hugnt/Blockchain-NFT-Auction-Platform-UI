@@ -13,3 +13,4 @@ export { default as Loading } from './Loading';
 export { default as Error } from './Error';
 export { default as MetadataProperty } from './MetadataProperty';
 export { default as NFTModal } from './NFTModal';
+export { default as VotingCard } from './VotingCard';

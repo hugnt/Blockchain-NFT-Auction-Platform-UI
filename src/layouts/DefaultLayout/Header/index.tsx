@@ -200,15 +200,15 @@ export default function Header() {
           >
             Bidding
           </NavLink>
+          <NavLink to="/Voting" className="mx-3 menu-item" data-hover="Voting">
+            Voting
+          </NavLink>
           <NavLink
             to="/MintingAsset"
             className="mx-3 menu-item"
             data-hover="Create"
           >
             Create
-          </NavLink>
-          <NavLink to="/Search" className="mx-3 menu-item" data-hover="Search">
-            Search
           </NavLink>
           <NavLink
             to="/More"

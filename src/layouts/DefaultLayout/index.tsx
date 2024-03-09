@@ -2,7 +2,7 @@ import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import Header from './Header'
 import Banner from './Banner'
 import Footer from './Footer'
-import { Background, Loading, NFTModal } from '~/components'
+import { Background, Loading, NFTModal, VotingCard } from '~/components'
 import ReelBox from './ReelBox'
 import { useLocation } from "react-router-dom";
 

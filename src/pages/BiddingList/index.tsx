@@ -115,14 +115,14 @@ export default function BiddingList() {
         id="area-bidding-list"
         className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
       >
-        <NFT />
-        <NFT />
-        <NFT />
-        <NFT />
-        <NFT />
-        <NFT />
-        <NFT />
-        <NFT />
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
+        <NFT onBidding={true}/>
       </div>
       <div
         id="area-pagination"

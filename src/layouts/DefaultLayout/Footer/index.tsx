@@ -1,5 +1,6 @@
 import React from "react";
 import { FaCaretRight } from "react-icons/fa6";
+import logo from "~/assets/images/layout/logo-full.png";
 import { FaFacebookF, FaYoutube, FaTwitter, FaTelegramPlane  } from "react-icons/fa";
 export default function Footer() {
   return (
@@ -7,9 +8,9 @@ export default function Footer() {
       <div id="footer" className="font-semibold container max-w-7xl pt-12">
         <div id="ft-top" className="flex justify-between items-center">
           <div id="ft-logo-wrapper" className="flex justify-start">
-            <div id="ft-logo" className="text-white bg-purple-3 px-16 py-6">
-              Logo
-            </div>
+          <div id="logo" className="py-4">
+            <img src={logo} alt="" className="object-contain w-60"/>
+          </div>
           </div>
           <ul>
             <li className="text-white mb-1.5">Auction Plaform</li>

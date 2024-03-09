@@ -9,7 +9,7 @@ import { FaRegUser } from "react-icons/fa6";
 import { BiHelpCircle } from "react-icons/bi";
 import { MdRefresh } from "react-icons/md";
 
-import avatar from "~/assets/images/nft/user.png";
+import logo from "~/assets/images/layout/logo12.png";
 import nami from "~/assets/images/layout/nami.svg";
 import eternl from "~/assets/images/layout/eternl.png";
 import flint from "~/assets/images/layout/flint.svg";
@@ -185,8 +185,8 @@ export default function Header() {
         className=" flex justify-between items-center container max-w-7xl font-semibold cursor-pointer"
       >
         <div id="logo-wrapper" className="flex justify-start w-3/12">
-          <div id="logo" className=" bg-purple-3 px-16 py-6">
-            Logo
+          <div id="logo" className="py-4">
+            <img src={logo} alt="" className="object-contain w-40"/>
           </div>
         </div>
         <ul id="menu" className="flex justify-center ">

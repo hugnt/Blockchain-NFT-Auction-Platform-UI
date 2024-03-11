@@ -42,6 +42,11 @@ export const publicRoutes:PublicRoute[] = [
         component: Profile
     },
     {
+        name:"Assets",
+        path:"/Assets",
+        component: Profile
+    },
+    {
         name: "NotFound",
         path: '*',
         component: NotFound,

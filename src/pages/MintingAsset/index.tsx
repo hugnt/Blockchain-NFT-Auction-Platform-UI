@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { GoTrash } from "react-icons/go";
 import { FaPlus } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
@@ -7,66 +7,144 @@ import "./MintingAsset.css";
 import { CheckBox, MetadataProperty } from "~/components";
 import fileNotFound from "~/assets/images/layout/uploadFile.png";
 import { MetadataObject, NFTMintInfor } from "~/utils";
+import LucidContext from "~/contexts/components/LucidContext";
+import { LucidContextType } from "~/types/LucidContextType";
+import axios from "axios";
+import mintAsset from "~/apiServices/contract/mintAsset";
+import { toast } from "react-toastify";
 
 interface NFTPreInfor{
   title?:string;
   mediaType?:string;
   desc?:string;
 }
-
-export default function MintingAsset() {
-  const [file, setFile] = useState<string | null>(null);
-  const [metadata, setMetadata] = useState<MetadataObject[]>([{ key: '', value: '' }]);
-  const [nftInfor, setNFTInfor] = useState<NFTPreInfor>({title:"",mediaType:"", desc:""});
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const fileObjectUrl = URL.createObjectURL(e.target.files[0]);
-      setFile(fileObjectUrl);
-    }
-    else {
-      setFile(null);
-    }
-  };
-  const handleInforChange = (nftInfor:NFTPreInfor) =>{
-    setNFTInfor(prevInfor => {
-      let updatedInfor = {...prevInfor};
-      if(nftInfor.title!=null) updatedInfor.title = nftInfor.title;
-      else if(nftInfor.mediaType!=null) updatedInfor.mediaType = nftInfor.mediaType;
-      else if(nftInfor.desc!=null) updatedInfor.desc = nftInfor.desc;
-      return updatedInfor;
-    });
-  }
-
-  const handleAddField = () => {
-    setMetadata(prevList => [...prevList, { key: '', value: '' }]);
-  };
-  const handleRemoveField = (index: number) => {
-    setMetadata(prevList => {
-      const updatedList = [...prevList];
-      updatedList.splice(index, 1);
-      return updatedList;
-    });
-  };
-  const handlePropertyChange = (index: number, updatedMetadata: MetadataObject) => {
-    setMetadata(prevList => {
-      const updatedList = [...prevList];
-      
-      updatedList[index] = updatedMetadata;
-      return updatedList;
-    });
-  };
-
-  const handleGetNFTMintInfor = () =>{
-      const nftMintInfor:NFTMintInfor ={
-          fileURL:file,
-          title:nftInfor.title,
-          mediaType:nftInfor.mediaType,
-          desc:nftInfor.desc,
-          metadata: metadata
+function convertMetadataToObj(metadataArray: any) {
+  const resultObj: any = {};
+  for (const item of metadataArray) {
+      if (item.hasOwnProperty("property") && item.hasOwnProperty("value")) {
+          resultObj[item.property] = item.value;
       }
+  }
+  return resultObj;
+}
+export default function MintingAsset() {
+  const { lucidWallet } = useContext<LucidContextType>(LucidContext);
+  const [isActionCreate, setIsActionCreate] = useState(false);
+  const [title, setTitle] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [mediaType, setMediaType] = useState<string>("Media type asset");
+    const [imagePath, setImagePath] = useState<string>("");
+    const [image, setImage] = useState<File>(null!);
+    const [fileName, setFileName] = useState<string>("PNG, Video, Music, GIF, MP4 or MP3. Max 100mb");
+    const [metadatas, setMetadatas] = useState<MetadataObject[]>([{ key: '', value: '' }]);
+
+  useEffect(() => {
+    return function () {
+      imagePath && URL.revokeObjectURL(imagePath);
+    };
+}, [imagePath]);
+const handleChangeFile = function (event: ChangeEvent<HTMLInputElement>) {
+  event.preventDefault();
+  if (event.target.files !== null) {
+      setImage(event.target.files[0]);
+      setImagePath(URL.createObjectURL(event.target.files[0]));
+      setFileName(event.target.files[0].name);
+      setMediaType(event.target.files[0].type);
+      event.target.value = "";
+  }
+};
+const handleChooseFile = function () {
+  const fileImageElement: any = document.querySelector(".file__input");
+  fileImageElement?.click();
+};
+
+const handleChangeTitle = function (event: ChangeEvent<HTMLInputElement>) {
+  setTitle(event.target.value);
+};
+
+const handleChangeDescription = function (event: ChangeEvent<HTMLTextAreaElement>) {
+  setDescription(event.target.value);
+};
+
+const handleAddField = () => {
+  setMetadatas(prevList => [...prevList, { key: '', value: '' }]);
+};
+const handleRemoveField = (index: number) => {
+  setMetadatas(prevList => {
+    const updatedList = [...prevList];
+    updatedList.splice(index, 1);
+    return updatedList;
+  });
+};
+const handlePropertyChange = (index: number, updatedMetadata: MetadataObject) => {
+  setMetadatas(prevList => {
+    const updatedList = [...prevList];
+    
+    updatedList[index] = updatedMetadata;
+    return updatedList;
+  });
+};
+
+  const handleGetNFTMintInfor =async () =>{
+    const nftMintInfor : NFTMintInfor ={
+      fileURL:imagePath,
+      title:title,
+      mediaType:mediaType,
+      desc:description,
+      metadata: metadatas
+  }  
+  try {
+    setIsActionCreate(true);
+    if (lucidWallet) {
+        const formData = new FormData();
+        formData.append("file", image);
+        const metadata = JSON.stringify({ name: "fileName" });
+        const customMetadata = convertMetadataToObj(metadatas);
+        formData.append("pinataMetadata", metadata);
+        const options = JSON.stringify({ cidVersion: 0 });
+        formData.append("pinataOptions", options);
+        const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+            headers: {
+                "Content-Type": `multipart/form-data; boundary=${formData}`,
+                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIzOTBlYTJkYy04ZDc5LTQzYWMtYjFkOS0zYTE5ZWRkZTkzNzYiLCJlbWFpbCI6Im5ndXllbmtoYW5oMTcxMTIwMDNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjQ0MjE1ZTZjMzk0ZjNjMjNjMzkxIiwic2NvcGVkS2V5U2VjcmV0IjoiOWZiYWRjOWIxOWJhMmRjYzNiZTU4MzMyZDJiNjAxMjE4YzhjYTM5NjIzMzU5ZGY3NWY3YzA3NjYxYTFlNGZkMyIsImlhdCI6MTcwMzA2MDI0N30.8D5f1dlPgVKDif5CikQtU4kd7pCcqIWvXo2Mlu5mYXk`,
+            },
+        });
+
+        const { txHash, policyId, assetName } = await mintAsset({
+            lucid: lucidWallet,
+            customMetadata,
+            description,
+            imageUrl: "ipfs://" + response.data.IpfsHash,
+            mediaType,
+            title,
+        });
+
+        if (!txHash) {
+            toast.warning("Mint asset faild");
+            return;
+        }
+
+        toast.success("Mint asset successfully");
+        setTitle("");
+        setDescription("");
+        setImagePath("");
+        setMetadatas([]);
+        setMediaType("");
+       
+    } else {
+        toast.error("Please connect wallet")
+    }
+} catch (error) {
+    toast.warning("Mint asset faild");
+    console.log(error);
+} finally {
+    setIsActionCreate(false);
+}
       console.log(nftMintInfor);
   };  
+
+
+
   return (
     <div
       id="mint-details"
@@ -85,7 +163,9 @@ export default function MintingAsset() {
                 file:text-sm file:font-semibold
                 hover:file:bg-white
                 hover:file:text-purple-800
-              "  onChange={handleFileChange} />
+              "  onChange={handleChangeFile} 
+                onClick={handleChooseFile}
+              />
           </div>
         </div>
         <div className="asset-input-box mb-6">
@@ -94,7 +174,8 @@ export default function MintingAsset() {
             type="text"
             className="w-full focus:outline-none focus:border-white focus:ring-white  bg-fog-1 border border-fog-1 px-6  py-3 rounded-lg font-light text-white placeholder:text-white"
             placeholder="Title"
-            onChange={(e)=>handleInforChange({title:e.target.value})}
+            onChange={handleChangeTitle}
+            
           />
         </div>
         <div className="asset-input-box mb-6">
@@ -103,7 +184,8 @@ export default function MintingAsset() {
             type="text"
             className="w-full focus:outline-none focus:border-white focus:ring-white  bg-fog-1 border border-fog-1 px-6  py-3 rounded-lg font-light text-white placeholder:text-white"
             placeholder="Media type"
-            onChange={(e)=>handleInforChange({mediaType:e.target.value})}
+            value={mediaType}
+            readOnly
           />
         </div>
         <div className="asset-input-box mb-6">
@@ -112,14 +194,14 @@ export default function MintingAsset() {
             rows={5}
             className="w-full focus:outline-none focus:border-white focus:ring-white  bg-fog-1 border border-fog-1 px-6  py-3 rounded-lg font-light text-white placeholder:text-white"
             placeholder="Description"
-            onChange={(e)=>handleInforChange({desc:e.target.value})}
+            onChange={handleChangeDescription}
           />
         </div>
         <div className="asset-input-box mb-6">
           <div className="asset-label mb-2">Custom metadata</div>
           <div className="asset-list-metadata">
 
-            {metadata.map((field, index) => (
+            {metadatas.map((field, index) => (
               <MetadataProperty
                 key={index}
                 index={index}
@@ -186,9 +268,9 @@ export default function MintingAsset() {
           id="asset-preview-box"
           className="top-12 mb-28 p-8 rounded-[20px] border border-fog-2 bg-fog-1 overflow-hidden "
         >
-          {file ? <div className={`h-72 nft-image  overflow-hidden mb-8`}>
+          {imagePath ? <div className={`h-72 nft-image  overflow-hidden mb-8`}>
             <img
-              src={file}
+              src={imagePath}
               className="w-full h-full object-contain object-center relative"
             />
           </div> :
@@ -199,13 +281,13 @@ export default function MintingAsset() {
               />
             </div>}
           <div className="nft-pre-infor flex justify-between my-2">
-            <div className="nft-name font-semibold">{nftInfor.title==''?<i className="text-fog-2">Title</i>:nftInfor.title}</div>
+            <div className="nft-name font-semibold">{title==''?<i className="text-fog-2">Title</i>:title}</div>
             <div className="nft-type font-semibold">
-              {nftInfor.mediaType==''?<i className="text-fog-2">Media type</i>:nftInfor.mediaType}
+              {mediaType==''?<i className="text-fog-2">Media type</i>:mediaType}
             </div>
           </div>
           <div id="asset-preview-desc">
-            {nftInfor.desc==''?<i className="text-fog-2">Desciption</i>:nftInfor.desc}
+            {description==''?<i className="text-fog-2">Desciption</i>:description}
           </div>
         </div>
       </div>

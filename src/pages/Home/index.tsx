@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import listAssetsFromAddress from "~/apiServices/contract/listAssetsFromWallet";
 import { NFT, NFTModal, UserRow } from "~/components";
 import NFTCategory from "~/components/NFTCategory";
 import SlideHaft from "~/components/SlideArea";
+import LucidContext from "~/contexts/components/LucidContext";
+import { NftItemType } from "~/types/GenericsType";
+import { LucidContextType } from "~/types/LucidContextType";
 
 export default function Home() {
-  
+  const { isConnected,walletItem, networkPlatform, lucidNeworkPlatform } = useContext<LucidContextType>(LucidContext);
+  const [assets,setAssets]=useState<NftItemType[]>([]);
+ 
+  useEffect(()=>{
+      async function fetchAsset() {
+
+            const address= walletItem.walletAddress
+            console.log(`wallet address: ${address}`);
+            if(address!== undefined){
+
+              const assetsFromAddress=await listAssetsFromAddress({ address:address })
+              setAssets(assetsFromAddress)
+            }
+      }
+      
+      fetchAsset();
+      console.log(assets)
+  },[isConnected])
+
   return (
     <div className="py-12">
        

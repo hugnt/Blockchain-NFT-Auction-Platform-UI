@@ -7,14 +7,14 @@ import axios from "axios";
 import fetchInformationAsset from "~/utils/fetchInformationAsset";
 // "addr_test1wp3edd27lcfkzpd2efc9wp9kaywmdl3p37kv3j4sqa36tnsq823m9"
 type Props = {
-    lucid: Lucid;
+    address: String;
 };
 // address of contract lock:
-const listAssetsFromAddress = async function ({ lucid }: Props): Promise<NftItemType[] | any> {
+const listAssetsFromAddress = async function ({ address }: Props): Promise<NftItemType[] | any> {
     try {
-        if (lucid){
-            const address= lucid.utils.getAddressDetails(await lucid.wallet.address());
-            
+        if (address){
+            console.log(1111);
+            console.log(`Wallet Address: ${address}`)
             const paginatedData = await axios.post(
                 `/koios/assets/address-assets`,
                 { address: address },

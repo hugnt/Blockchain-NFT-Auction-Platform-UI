@@ -1,0 +1,193 @@
+{
+  "preamble": {
+    "title": "tientung/auction",
+    "description": "Aiken contracts for project 'tientung/auction'",
+    "version": "0.0.0",
+    "plutusVersion": "v2",
+    "compiler": {
+      "name": "Aiken",
+      "version": "v1.0.21-alpha+4b04517"
+    },
+    "license": "Apache-2.0"
+  },
+  "validators": [
+    {
+      "title": "auction.bid",
+      "datum": {
+        "title": "datum",
+        "schema": {
+          "$ref": "#/definitions/auction~1DatumBid"
+        }
+      },
+      "redeemer": {
+        "title": "_redeemer",
+        "schema": {
+          "$ref": "#/definitions/Void"
+        }
+      },
+      "compiledCode": "58c40100003232323232323232222325333007323253330093370e90010008a5114a0600e00260166018600a00429309b2b19299980399b87480000044c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c94ccc070c07800852616375a603800260380046eb8c068004c068008dd7180c000980c0011bae30160013016002375c602800260280046eb8c048004c048008dd6980800098080011bae300e001300e002375c6018002600a0082c600a0064600a6ea80048c00cdd5000ab9a5573aaae7955cfaba157441",
+      "hash": "798a00eed3f93f2aec2138bd0bf4a67398c9863ede2b09573256c490"
+    },
+    {
+      "title": "auction.lockAssets",
+      "datum": {
+        "title": "datum",
+        "schema": {
+          "$ref": "#/definitions/auction~1DatumLock"
+        }
+      },
+      "redeemer": {
+        "title": "_redeemer",
+        "schema": {
+          "$ref": "#/definitions/Void"
+        }
+      },
+      "compiledCode": "58e40100003232323232323232222325333007323253330093370e9001000899911919198008008011129998088008a501323253330103371e00400c29444cc010010004c050008dd718090009bac300f301030103010301030103010301030103009002300d3007004375c601a601c601c601c600e00c2940c01c004c02cc030c014008526136563253330073370e9000000899191919191919192999809180a0010a4c2c6eb8c048004c048008dd7180800098080011bae300e001300e002375c6018002600a0082c600a0064600a6ea80048c00cdd5000ab9a5573aaae7955cfaba157441",
+      "hash": "6396b55efe136105aaca705704b6e91db6fe218facc8cab00763a5ce"
+    },
+    {
+      "title": "auction.vote",
+      "datum": {
+        "title": "datum",
+        "schema": {
+          "$ref": "#/definitions/auction~1DatumVote"
+        }
+      },
+      "redeemer": {
+        "title": "_redeemer",
+        "schema": {
+          "$ref": "#/definitions/Void"
+        }
+      },
+      "compiledCode": "5901470100003232323232323232222325333007323253330093370e9001000899299980519911919198008008011129998090008a501323253330113371e00400c29444cc010010004c054008dd718098009bac301030113011301130113011301130113011300a00230013008005375c601c601e601e601e601e601000e266446464a66601c66e1d20020011337120066eb4c048c03000852818060009801980518019805001180718079807980798079807980798079804180098040029bad300e300f300f300800714a04601c0022940c01c004c02cc030c014008526136563253330073370e9000000899191919191919191919299980a180b0010a4c2c6eb8c050004c050008dd7180900098090011bad30100013010002375c601c002601c0046eb8c030004c01401058c01400c8c014dd5000918019baa0015734aae7555cf2ab9f5742ae881",
+      "hash": "ba866118776fe0272c29ac5df98dd18a042d68016c935ed11584b12c"
+    }
+  ],
+  "definitions": {
+    "ByteArray": {
+      "dataType": "bytes"
+    },
+    "Int": {
+      "dataType": "integer"
+    },
+    "Void": {
+      "title": "Unit",
+      "description": "The nullary constructor.",
+      "anyOf": [
+        {
+          "dataType": "constructor",
+          "index": 0,
+          "fields": []
+        }
+      ]
+    },
+    "auction/DatumBid": {
+      "title": "DatumBid",
+      "anyOf": [
+        {
+          "title": "DatumBid",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "policyId",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "assetName",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "lock_until",
+              "$ref": "#/definitions/Int"
+            },
+            {
+              "title": "bidder",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "winter",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "smc_address",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "auction",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "author",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "price",
+              "$ref": "#/definitions/Int"
+            }
+          ]
+        }
+      ]
+    },
+    "auction/DatumLock": {
+      "title": "DatumLock",
+      "anyOf": [
+        {
+          "title": "DatumLock",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "policyId",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "assetName",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "bidder",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "auction",
+              "$ref": "#/definitions/ByteArray"
+            }
+          ]
+        }
+      ]
+    },
+    "auction/DatumVote": {
+      "title": "DatumVote",
+      "anyOf": [
+        {
+          "title": "DatumVote",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "policyId",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "assetName",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "lock_until",
+              "$ref": "#/definitions/Int"
+            },
+            {
+              "title": "voter",
+              "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "auction",
+              "$ref": "#/definitions/ByteArray"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

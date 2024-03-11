@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { Component, useContext, useEffect, useRef, useState } from "react";
 
 import { IoNotifications } from "react-icons/io5";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
@@ -37,110 +37,40 @@ import { GET_IMAGE } from "~/apiServices/utils/request";
 import { useAppDispatch, useAppSelector } from "~/utils/store/store";
 import { handleChangeAccount } from "~/utils/store/features/accountSlice";
 import { handleChangeUI, handleLoading } from "~/utils/store/features/uiSlice";
+import ConnectWallet from "~/components/ConnectWallet/ConnectWallet";
+import LucidContext from "~/contexts/components/LucidContext";
+import { LucidContextType } from "~/types/LucidContextType";
 
 export default function Header() {
-
+  const { walletItem,isConnected } =
+  useContext<LucidContextType>(LucidContext);
   let [activeUser, setActiveUser] = useState(false);
-  let [activeWallet, setActiveWallet] = useState(false);
-  let [isConnectWallet, setIsConnectWallet] = useState(false);
-  const [address, setAddress] = useState<string>('');
-  const [utxos, setUTxOs] = useState<UTxO[]>([]);
   const [refreshWallet, setRefreshWallet] = useState<boolean>(false);
 
   let menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const accountStore = useAppSelector((state)=>state.account.account);
-  const lucid = useAppSelector((state)=>state.lucid.lucid);
   const loading = useAppSelector((state)=>state.ui.loading);
   //let accountStore = useAppSelector((state)=>state.account.account);
 
   let [account, setAccount] = useState<Account>(null!);
-  const handleConnectWallet = async () => {
-    try {
-      setActiveWallet(false);
-      dispatch(handleLoading({loading:true}));
-
-      const api = await window.cardano.nami.enable();
-      lucid.selectWallet(api);
-      
-      const walletAddress = await lucid.wallet.address();
-      const resAccount = await loginAccount(walletAddress);
-      
-      if(resAccount==null) throw new Error("Server is not responding");
-      setAccount(resAccount as Account);
-
-      setIsConnectWallet(true);
-      toast.success("Connected wallet!", {
-        position: "top-right",
-        
-      });
-    } catch (error) {
-        toast.error("Connecting wallet failed!", {
-        position: "top-right"
-      });
-    } finally {
-      dispatch(handleLoading({loading:false}));
-    }
-
-  }
-
-  const handleDisconnectWallet = async () => {
-    try {
-      dispatch(handleLoading({loading:true}));
-      setActiveWallet(false);
-      lucid.selectWallet(null!);
-      
-      setIsConnectWallet(false);
-      toast.success("Disconnected wallet!", {
-        position: "top-right",
-        
-      });
-    } catch (error) {
-        toast.error("Disconnecting failed!", {
-        position: "top-right"
-      });
-    } finally {
-      dispatch(handleLoading({loading:false}));
-    }
-
-  }
-
-  //USE EFFECT
   useEffect(() => {
-    async function checkAlreadyConnectWallet(){
-      setActiveWallet(false);
-      dispatch(handleLoading({loading:true}));
 
-      const isNamiConnected = await window.cardano.nami.isEnabled();
-      if(lucid==null||!isNamiConnected) return;
-      const api = await window.cardano.nami.enable();
-      lucid.selectWallet(api);
-    
-      const walletAddress = await lucid.wallet.address();
-      const resAccount = await loginAccount(walletAddress);
-      if(resAccount==null) throw new Error("Server is not responding");
-      setAccount(resAccount as Account);
+    const fetchData = async () => {
+        const walletAddress = walletItem.walletAddress;
+        if(walletAddress!== undefined){
+          const resAccount = await loginAccount(walletAddress);
+          if(resAccount==null) throw new Error("Server is not responding");
+          setAccount(resAccount as Account);
+        }
+        else {
+          toast.error("Error when connect wallet")
+        }
+        // Xử lý kết quả ở đây nếu cần
+    };
 
-      setIsConnectWallet(true);
-      toast.success("Reconnected wallet!", {
-        position: "top-right",
-        
-      });
-    }
-    try {
-      if(accountStore&&lucid){
-        checkAlreadyConnectWallet();
-      }
-    } catch (error) {
-        toast.error("Connecting Server failed", {
-        position: "top-right"
-      });
-    } finally {
-      dispatch(handleLoading({loading:false}));
-    }
-
-    
-  }, []);
+    fetchData();
+}, [isConnected, walletItem.walletAddress]);
 
   useEffect(() => {
     if (menuRef.current) {
@@ -150,31 +80,18 @@ export default function Header() {
   }, [menuRef.current]);
 
   useEffect(() => {
-    if (isConnectWallet) {
+    if (isConnected===true) {
       dispatch(handleChangeAccount({account: account}));
-      setRefreshWallet(true);
+      console.log(account)
+    //  setRefreshWallet(true);
     }
     else{
       dispatch(handleChangeAccount({account: null!}));
     }
     
-  }, [isConnectWallet]);
+  }, [account, dispatch, isConnected]);
 
   
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const walletAddress = await lucid.wallet.address();
-      setAddress(walletAddress);
-    };
-    const getUtxos = async () => {
-        const UTXOS = await lucid.wallet.getUtxos();
-        setUTxOs(UTXOS);
-        //console.log(UTXOS);
-    }
-
-    if(lucid&&refreshWallet){getAddress();getUtxos();}
-  }, [refreshWallet]);
 
 
   return (
@@ -225,7 +142,7 @@ export default function Header() {
           >
             <IoNotifications size={"1.5em"} />
           </div>
-          {isConnectWallet && <div id="user-zone" className="w-10  relative font-medium z-30">
+          {isConnected && <div id="user-zone" className="w-10  relative font-medium z-30">
             <div
               id="user-avatar"
               className=" h-10 rounded-full overflow-hidden border-2"
@@ -255,90 +172,8 @@ export default function Header() {
               </div>
             </Transition>
           </div>}
+          <ConnectWallet/>
 
-          <div className="relative z-30 ms-1.5" >
-            <div
-              className=" flex justify-between items-center rounded-[40px] bg-fog-1 px-4 py-1.5 border border-white  hover:bg-purple-3"
-              onClick={() => setActiveWallet(!activeWallet)}
-            >
-              {isConnectWallet ? <li className="flex items-center">
-                <div className="h-5 w-5 overflow-hidden me-3">
-                  <img src={nami} alt="" className="w-full h-full object-contain" />
-                </div>
-                <div id="user-name">Nami</div>
-              </li> : "Connect Wallet"}
-
-              &nbsp;{" "}
-              {activeWallet ? <FaCaretUp /> : <FaCaretDown />}
-            </div>
-            {!isConnectWallet && <Transition animation={"fadeMove"} isAppear={activeWallet} timeout={400} direction="down" className="">
-              <div className="dropdown-zone absolute mt-4 right-0 bg-white text-purple-1 w-40 rounded-md">
-                <ul className="py-3 ">
-                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6" onClick={async () => handleConnectWallet()}>
-                    <div className="h-5 w-5 overflow-hidden me-3">
-                      <img src={nami} alt="" className="w-full h-full object-contain" />
-                    </div>
-                    <div id="user-name">Nami</div>
-                  </li>
-                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
-                    <div className="h-5 w-5 overflow-hidden me-3">
-                      <img src={eternl} alt="" className="w-full h-full object-contain" />
-                    </div>
-                    <div id="user-name">Eternl</div>
-                  </li>
-                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
-                    <div className="h-5 w-5 overflow-hidden me-3">
-                      <img src={flint} alt="" className="w-full h-full object-contain" />
-                    </div>
-                    <div id="user-name">Flint</div>
-                  </li>
-                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6">
-                    <div className="h-5 w-5 overflow-hidden me-3">
-                      <img src={lace} alt="" className="w-full h-full object-contain" />
-                    </div>
-                    <div id="user-name">Lace</div>
-                  </li>
-                  <li className="border-t my-2"></li>
-                  <li className="flex items-center px-3 hover:text-purple-6">
-                    <MdOutlineRemoveRedEye size="1.2em" className="me-3" />
-                    <div id="user-name">View All</div>
-                  </li>
-                </ul>
-              </div>
-            </Transition>}
-
-            {isConnectWallet && <Transition animation={"fadeMove"} isAppear={activeWallet} timeout={400} direction="down" className="">
-              <div className="dropdown-zone absolute mt-4 right-0 bg-white text-purple-1 w-48 rounded-md">
-                <ul className="py-3 ">
-                  <li className="flex items-center px-3 py-2 hover:bg-purple-3 hover:text-purple-6">
-                    <div className="h-5 w-5 overflow-hidden me-3">
-                      <img src={wallet} alt="" className="w-full h-full object-contain" />
-                    </div>
-                    <Tooltip title={address} placement="left">
-                      <div className="text-ellipsis overflow-hidden  w-full">{address}</div>
-                    </Tooltip>
-                  </li>
-                  <li className="flex items-center px-3 py-2 hover:bg-purple-3  hover:text-purple-6" >
-                    <div className="h-5 w-5 me-3 overflow-hidden">
-                      <img src={ada} alt="" className="w-full h-full object-contain" />
-                    </div>
-                    <Tooltip title={utxos[utxos.length - 1]&&(utxos[utxos.length - 1].assets.lovelace) + " lovelace"} placement="left">
-                      <div className="overflow-hidden">{utxos[utxos.length - 1]&&((utxos[utxos.length - 1].assets.lovelace)/BigInt(1000000)).toString()} ADA</div>
-                    </Tooltip>
-                  </li>
-                  <li className="border-t my-2"></li>
-                  <li className="flex items-center px-3 hover:text-green-600 mb-3" onClick={() => setRefreshWallet(true)}>
-                    <MdRefresh  size="1.2em" className="me-3" />
-                    <div>Refresh</div>
-                  </li>
-                  <li className="flex items-center px-3 hover:text-red-500" onClick={async () => handleDisconnectWallet()}>
-                    <MdLogout size="1.2em" className="me-3" />
-                    <div>Disconnect</div>
-                  </li>
-                </ul>
-              </div>
-            </Transition>}
-          </div>
         </div>
       </div>
     </div>

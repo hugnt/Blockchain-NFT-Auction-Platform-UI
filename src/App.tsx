@@ -3,6 +3,8 @@ import { ReactNode } from "react";
 import "./App.css";
 import { Provider } from "react-redux";
 import { DefaultLayout } from "~/layouts";
+import ContextProvider from "./contexts";
+
 import {
   BiddingDetails,
   BiddingList,
@@ -44,6 +46,7 @@ function App() {
   }, []);
 
   return (
+    <ContextProvider>
       <Router>
         <div className="App">
           <Routes>
@@ -71,6 +74,7 @@ function App() {
           </Routes>
         </div>
       </Router>
+    </ContextProvider>
   );
 }
 

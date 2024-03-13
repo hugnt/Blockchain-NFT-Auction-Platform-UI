@@ -16,9 +16,10 @@ const listAssetsFromAddress = async function ({ address }: Props): Promise<NftIt
             console.log(1111);
             console.log(`Wallet Address: ${address}`)
             const paginatedData = await axios.post(
-                `/koios/assets/address-assets`,
+                `https://preview.koios.rest/api/v1/address_assets`,
                 { address: address },
             );
+            console.log(paginatedData)
             const assetsFromAddress = await Promise.all(
                 paginatedData.data.map(async ({ policy_id, asset_name }: any) => {
                     const data = await fetchInformationAsset({ policyId: policy_id, assetName: asset_name });

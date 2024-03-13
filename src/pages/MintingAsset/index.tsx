@@ -98,23 +98,35 @@ const handlePropertyChange = (index: number, updatedMetadata: MetadataObject) =>
     if (lucidWallet) {
         const formData = new FormData();
         formData.append("file", image);
-        const metadata = JSON.stringify({ name: "fileName" });
+        const metadata = JSON.stringify({ name: title });
         const customMetadata = convertMetadataToObj(metadatas);
         formData.append("pinataMetadata", metadata);
         const options = JSON.stringify({ cidVersion: 0 });
         formData.append("pinataOptions", options);
-        const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-            headers: {
-                "Content-Type": `multipart/form-data; boundary=${formData}`,
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIzOTBlYTJkYy04ZDc5LTQzYWMtYjFkOS0zYTE5ZWRkZTkzNzYiLCJlbWFpbCI6Im5ndXllbmtoYW5oMTcxMTIwMDNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjQ0MjE1ZTZjMzk0ZjNjMjNjMzkxIiwic2NvcGVkS2V5U2VjcmV0IjoiOWZiYWRjOWIxOWJhMmRjYzNiZTU4MzMyZDJiNjAxMjE4YzhjYTM5NjIzMzU5ZGY3NWY3YzA3NjYxYTFlNGZkMyIsImlhdCI6MTcwMzA2MDI0N30.8D5f1dlPgVKDif5CikQtU4kd7pCcqIWvXo2Mlu5mYXk`,
-            },
-        });
+        // const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+        //     headers: {
+        //         "Content-Type": `multipart/form-data; boundary=${formData}`,
+        //         Authorization: `Bearer ${process.env.VITE_PINATA_JWT}`,
+        //     },
+        //     body: formData,
+        // });
 
+        const response = await fetch(
+          "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJlYzEyMGUwYS1iMmZhLTQ1MTUtOWNlMS02OTA5YmJjOTE5NTkiLCJlbWFpbCI6InRpZW50dW5nMDMubnR0dm5AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImRjN2M4MGVjNjE5N2VlMTExNDM4Iiwic2NvcGVkS2V5U2VjcmV0IjoiNmEzNjhiNzlkNGQ1NGVjOTFiYzUwYjRjY2Y5MWMzNjEwMjA5M2I2M2Y0ZWEwYjg0YWQ1ZjYyNmVhOTQ3NTA5NSIsImlhdCI6MTcwNzA1ODMzM30.99D9gyTrJRpnbdX_b5vf9u3nHDlXRfyabzKeHKG53bw`,
+            },
+            body: formData,
+          }
+        );
+        const resData = await response.json();
         const { txHash, policyId, assetName } = await mintAsset({
             lucid: lucidWallet,
             customMetadata,
             description,
-            imageUrl: "ipfs://" + response.data.IpfsHash,
+            imageUrl: "ipfs://" + resData.IpfsHash,
             mediaType,
             title,
         });

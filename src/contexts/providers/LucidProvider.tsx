@@ -78,8 +78,8 @@ export const LucidProvider = function ({ children }: Props) {
                         return balance + utxo.assets.lovelace;
                     }, BigInt(0)),
                 ) / 1000000;
-
             setLucidWallet(lucid);
+            setLucidNeworkPlatform(lucid);
             setWalletItem(function (prevous: WalletItemType) {
                 return {
                     ...prevous,

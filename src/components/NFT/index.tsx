@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import nftImg from "~/assets/images/nft/nft4.png";
 import NFTModal from '../NFTModal';
 import { useNavigate } from 'react-router-dom';
+import convertIpfsAddressToUrl from '~/helper/convertIpfsAddressToUrl ';
 
 
 interface NFTProps {
@@ -27,7 +28,8 @@ export default function NFT(props: NFTProps) {
         <div className={`h-72 w-30 nft-image rounded-[20px] relative overflow-hidden `}
           onClick={() => {!onBidding?setActivePreview(true):navigate('/Bidding/1')}}>
           <img
-            src={nftImg}
+            src={imgSrc ? convertIpfsAddressToUrl(imgSrc) || '' : ''}
+            alt={imgSrc || ''}         
             className="w-full h-full object-cover object-center relative"
           />
           <div className="absolute inset-0 top-3 left-3 ntf-vote font-semibold">
@@ -36,7 +38,7 @@ export default function NFT(props: NFTProps) {
         </div>
   
         <div className="nft-pre-infor flex justify-between my-2">
-          <div className="nft-name font-semibold">3D Art</div>
+          <div className="nft-name font-semibold">{name}</div>
           <div className="nft-like flex items-center ">
             <FaRegHeart color="red" />
             &nbsp;300

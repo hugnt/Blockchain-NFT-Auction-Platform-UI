@@ -9,164 +9,97 @@ import listAssetsVote from "~/apiServices/contract/listAssetsVote";
 import findAssetsBid from "~/apiServices/contract/findAssetsBid"
 import findAssetsLock from "~/apiServices/contract/findAssetsLock"
 import findAssetsVote from "~/apiServices/contract/findAssetsVote"
-import fetchInformationAsset from "~/utils/fetchInformationAsset";
-import { NftItemType } from "~/types/GenericsType";
+import { fetchAssetInformationFromUnit } from "~/utils/fetchAssets/fetchAssetsFromAddress";
+import { AssetLock, AssetType, InforAssetVoteType, NftItemType } from "~/types/GenericsType";
 import LucidContext from "../components/LucidContext";
 import { LucidContextType } from "~/types/LucidContextType";
+import { DatumLock } from "~/constants/datumlock";
+import { Credential } from "lucid-cardano";
 
 type Props = {
     children: ReactNode;
 };
 
 const SmartContractProvider = function ({ children }: Props) {
+    const [timeVote, setTimeVote] = useState<number>(3600);
     const {networkPlatform, lucidNeworkPlatform } = useContext<LucidContextType>(LucidContext);
-    const [assetsLockFromSmartContract, setAssetsLockFromSmartContract] = useState<NftItemType[]>([]);
+    const [assetsLockFromSmartContract, setAssetsLockFromSmartContract] = useState<AssetLock[]>([]);
     const [assetsBidFromSmartContract, setAssetsBidFromSmartContract] = useState<NftItemType[]>([]);
     const [assetsVoteFromSmartContract, setAssetsVoteFromSmartContract] = useState<NftItemType[]>([]);
     const [loadingAssetsFromSmartContract, setLoadingAssetsFromSmartContract] = useState<boolean>(true);
+    const [inforAssetVotes,setInforAssetVote]=useState<InforAssetVoteType[]>([]);
+    const [votingOngoing,setVotingOnGoing]=useState<boolean>(true);
     const fetchAssetsLockFromSmartContract = async function () {
         try {
-            const assets: NftItemType[] = await listAssetsLock({ lucid: lucidNeworkPlatform });
+            const assets = await listAssetsLock({ lucid: lucidNeworkPlatform });
             if (assets) {
-                const assetPromises = assets.reverse().map(async function (asset: NftItemType) {
-                    const response: NftItemType = await fetchInformationAsset({
-                        policyId: asset.policyId,
-                        assetName: asset.assetName,
-                    });
-                    return { ...response, royalties: asset.royalties };
+                const assetPromises: Promise<AssetLock>[] = assets.reverse().map(async function (asset) {
+                    const unit: string = asset.policyId! + asset.assetName!;
+                    const response: AssetType = await fetchAssetInformationFromUnit(unit);
+                    const assetName = response.onchain_metadata?.name;
+                    const policyId = response.policy_id;
+                    const image = response.onchain_metadata?.image;
+                    const assetNameHex = response.asset;
+                    const bidder = asset.bidder;
+                    const auction = asset.auction;
+                    const voteAmount = findVoteAmount(asset.assetName!);
+                    // ép kiểu thêm url cho asset
+                    return { assetNameHex, assetName, policyId, image, voteAmount, bidder, auction };
                 });
-
-                const convertedAssets: NftItemType[] = await Promise.all(assetPromises);
-
-                setAssetsLockFromSmartContract((previousAssets: NftItemType[]) => {
-                    const updatedAssets: NftItemType[] = previousAssets.map((existingAsset: NftItemType) => {
-                        const matchingAsset = convertedAssets.find(function (newAsset: NftItemType) {
-                            return existingAsset.policyId === newAsset.policyId;
-                        });
-
-                        if (matchingAsset) {
-                            return { ...existingAsset, ...matchingAsset };
-                        }
-
-                        return existingAsset;
-                    });
-                    const newAssets: NftItemType[] = convertedAssets.filter(
-                        (newAsset: NftItemType) => !previousAssets.some((existingAsset: any) => existingAsset.policyId === newAsset.policyId),
-                    );
-
-                    return [...updatedAssets, ...newAssets];
-                });
+                const resolvedAssets = await Promise.all(assetPromises);
+                setAssetsLockFromSmartContract(resolvedAssets);
                 setLoadingAssetsFromSmartContract(false);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
-    const fetchAssetsVoteFromSmartContract = async function () {
-        try {
-            const assets: NftItemType[] = await listAssetsVote({ lucid: lucidNeworkPlatform });
-            if (assets) {
-                const assetPromises = assets.reverse().map(async function (asset: NftItemType) {
-                    const response: NftItemType = await fetchInformationAsset({
-                        policyId: asset.policyId,
-                        assetName: asset.assetName,
-                    });
-                    return { ...response, royalties: asset.royalties };
-                });
-
-                const convertedAssets: NftItemType[] = await Promise.all(assetPromises);
-
-                setAssetsVoteFromSmartContract((previousAssets: NftItemType[]) => {
-                    const updatedAssets: NftItemType[] = previousAssets.map((existingAsset: NftItemType) => {
-                        const matchingAsset = convertedAssets.find(function (newAsset: NftItemType) {
-                            return existingAsset.policyId === newAsset.policyId;
-                        });
-
-                        if (matchingAsset) {
-                            return { ...existingAsset, ...matchingAsset };
-                        }
-
-                        return existingAsset;
-                    });
-                    const newAssets: NftItemType[] = convertedAssets.filter(
-                        (newAsset: NftItemType) => !previousAssets.some((existingAsset: any) => existingAsset.policyId === newAsset.policyId),
-                    );
-
-                    return [...updatedAssets, ...newAssets];
-                });
-                setLoadingAssetsFromSmartContract(false);
+    const findVoteAmount = (assetName: string): number => {
+        for (const assetVote of inforAssetVotes) {
+            // Kiểm tra nếu assetVote có assetName tương ứng
+            if (assetVote.assetName === assetName) {
+                // Trả về voteAmount của assetVote này
+                return assetVote.voteAmount!;
             }
-        } catch (error) {
-            console.log(error);
         }
-    };
-    const fetchAssetsBidFromSmartContract = async function () {
-        try {
-            const assets: NftItemType[] = await listAssetsBid({ lucid: lucidNeworkPlatform });
-            if (assets) {
-                const assetPromises = assets.reverse().map(async function (asset: NftItemType) {
-                    const response: NftItemType = await fetchInformationAsset({
-                        policyId: asset.policyId,
-                        assetName: asset.assetName,
-                    });
-                    return { ...response, royalties: asset.royalties };
-                });
-
-                const convertedAssets: NftItemType[] = await Promise.all(assetPromises);
-
-                setAssetsBidFromSmartContract((previousAssets: NftItemType[]) => {
-                    const updatedAssets: NftItemType[] = previousAssets.map((existingAsset: NftItemType) => {
-                        const matchingAsset = convertedAssets.find(function (newAsset: NftItemType) {
-                            return existingAsset.policyId === newAsset.policyId;
-                        });
-
-                        if (matchingAsset) {
-                            return { ...existingAsset, ...matchingAsset };
-                        }
-
-                        return existingAsset;
-                    });
-                    const newAssets: NftItemType[] = convertedAssets.filter(
-                        (newAsset: NftItemType) => !previousAssets.some((existingAsset: any) => existingAsset.policyId === newAsset.policyId),
-                    );
-
-                    return [...updatedAssets, ...newAssets];
-                });
-                setLoadingAssetsFromSmartContract(false);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
+        // Trả về 0 nếu không tìm thấy hoặc không có dữ liệu
+        return 0;
+    }
     useEffect(
         function () {
             fetchAssetsLockFromSmartContract();
         },
-        [networkPlatform, lucidNeworkPlatform],
+        [networkPlatform, lucidNeworkPlatform,votingOngoing],
     );
-    useEffect(
-        function () {
-            fetchAssetsBidFromSmartContract();
-        },
-        [networkPlatform, lucidNeworkPlatform],
-    );
-    useEffect(
-        function () {
-            fetchAssetsVoteFromSmartContract();
-        },
-        [networkPlatform, lucidNeworkPlatform],
-    );
+    // useEffect(
+    //     function () {
+    //         fetchAssetsBidFromSmartContract();
+    //     },
+    //     [networkPlatform, lucidNeworkPlatform],
+    // );
+    // useEffect(
+    //     function () {
+    //         fetchAssetsVoteFromSmartContract();
+    //     },
+    //     [networkPlatform, lucidNeworkPlatform],
+    // );
     return (
         <SmartContractContext.Provider
             value={{
+                timeVote,
+                setTimeVote,
+                inforAssetVotes,
                 assetsLockFromSmartContract,
                 assetsBidFromSmartContract,
                 assetsVoteFromSmartContract,
+                setInforAssetVote,
                 setAssetsLockFromSmartContract,
                 setAssetsBidFromSmartContract,
                 setAssetsVoteFromSmartContract,
                 loadingAssetsFromSmartContract,
+                setLoadingAssetsFromSmartContract,
+                votingOngoing,
+                setVotingOnGoing,
                 burnAsset,
                 mintAsset,
             }}

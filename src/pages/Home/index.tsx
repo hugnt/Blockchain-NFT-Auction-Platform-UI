@@ -1,26 +1,30 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import getAllAsset from "~/utils/fetchAssets/fetchAssetsFromAddress";
+import { getAllAsset, fetchAssetInformationFromUnit, fetchAssetsFromAddress } from "~/utils/fetchAssets/fetchAssetsFromAddress";
+
 import { NFT, NFTModal, UserRow } from "~/components";
 import NFTCategory from "~/components/NFTCategory";
 import SlideHaft from "~/components/SlideArea";
 import LucidContext from "~/contexts/components/LucidContext";
-import { AssetType, NftItemType } from "~/types/GenericsType";
+import { AssetType, NftItemType,AssetLock } from "~/types/GenericsType";
 import { LucidContextType } from "~/types/LucidContextType";
 import convertIpfsAddressToUrl from "~/helper/convertIpfsAddressToUrl ";
+import listAssetsLock from "~/apiServices/contract/listAssetsLock";
+import { Lucid } from "lucid-cardano";
+import { SmartContractType } from "~/types/SmartContractType";
+import SmartContractContext from "~/contexts/components/SmartContractContext";
 
 export default function Home() {
-  const { isConnected, walletItem } = useContext<LucidContextType>(LucidContext);
+  const { isConnected, walletItem,lucidWallet,lucidNeworkPlatform } = useContext<LucidContextType>(LucidContext);
   const [assets, setAssets] = useState<AssetType[]>([]);
-
+  const {assetsLockFromSmartContract,votingOngoing} =useContext<SmartContractType>(SmartContractContext);
+  const [assetLock,setAssetLock]=useState<AssetLock[]>([])
   useEffect(() => {
-      const fetchData = async () => {
+      const fetchDataAsset = async () => {
           if (walletItem && walletItem.walletAddress) { // Kiểm tra xem walletItem và walletAddress có tồn tại không
               try {
                   const assetData = await getAllAsset(walletItem.walletAddress);
                   setAssets(assetData);
-                  console.log(assetData)
-                 // setAssets(assetData);
               } catch (error) {
                   // Xử lý lỗi nếu cần
               }
@@ -28,18 +32,13 @@ export default function Home() {
       };
 
       if (isConnected) {
-          fetchData();
+        fetchDataAsset();
       }
-  }, [isConnected, walletItem]);
-  for (let i = 0; i < assets.length; i++) {
-    const onchain_metadata = assets[i].onchain_metadata;
-    if (onchain_metadata && onchain_metadata.image) {
-      console.log(convertIpfsAddressToUrl(onchain_metadata.image));
-    }
-  }
+  }, [isConnected, walletItem,votingOngoing]);
   
-  
-  
+  useEffect(() => {
+       setAssetLock(assetsLockFromSmartContract);
+}, [lucidNeworkPlatform,assetsLockFromSmartContract,votingOngoing]);
   return (
     <div className="py-12">
        
@@ -105,10 +104,34 @@ export default function Home() {
               key={asset.policy_id}
               name={`${asset.onchain_metadata?.name}`}
               imgSrc={`${asset.onchain_metadata?.image}`}
-              onBidding={true}
+              policyId={asset?.policy_id}
+              assetName={asset?.asset_name}
+              voteAmount={10}
+              onBidding={false}
+              onLocking={false}
+              onVoting={false}
             />
           ))}
         </div>}
+        List assets Vote
+        <div
+          id="area-bidding-list"
+          className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
+        >
+          {assetLock.map((asset) => (
+            <NFT
+              key={asset.policyId}
+              name={`${asset?.assetName}`}
+              imgSrc={`${asset?.image}`}
+              policyId={asset?.policyId}
+              assetName={asset?.assetName}
+              voteAmount={asset?.voteAmount}
+              onBidding={false}
+              onLocking={true}
+              onVoting={true}
+            />
+          ))}
+        </div>
 
       <div id="area-top-user" className="my-12 mt-24 container max-w-7xl">
         <div className="flex items-center mb-8">

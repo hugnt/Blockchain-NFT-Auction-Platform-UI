@@ -45,4 +45,16 @@ type AssetType = {
         name?: string;
     };
 };
-
+type AssetLock={
+    asset?:string;
+    assetName?:string;
+    policyId?:string;
+    image?:string;
+    voteAmount?:number;
+    bidder?:string;
+    auction?:string;
+}
+type InforAssetVoteType={
+    assetName?:string;
+    voteAmount?:number;
+}

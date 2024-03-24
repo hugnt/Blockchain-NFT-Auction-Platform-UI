@@ -6,45 +6,218 @@ import { NFT, NFTModal, UserRow } from "~/components";
 import NFTCategory from "~/components/NFTCategory";
 import SlideHaft from "~/components/SlideArea";
 import LucidContext from "~/contexts/components/LucidContext";
-import { AssetType, NftItemType,AssetLock } from "~/types/GenericsType";
+import { AssetType, NftItemType,AssetLock, AssetBidType } from "~/types/GenericsType";
 import { LucidContextType } from "~/types/LucidContextType";
 import convertIpfsAddressToUrl from "~/helper/convertIpfsAddressToUrl ";
 import listAssetsLock from "~/apiServices/contract/listAssetsLock";
 import { Lucid } from "lucid-cardano";
 import { SmartContractType } from "~/types/SmartContractType";
 import SmartContractContext from "~/contexts/components/SmartContractContext";
+import { auctionAddress } from "~/libs";
+import unLock from "~/apiServices/contract/unLock";
+import { toast } from "react-toastify";
+import recoverVote from "~/apiServices/contract/recoverVote";
+import recoverBid from "~/apiServices/contract/recoverBid";
 
 export default function Home() {
-  const { isConnected, walletItem,lucidWallet,lucidNeworkPlatform } = useContext<LucidContextType>(LucidContext);
+  const {isConnected, walletItem,lucidNeworkPlatform,networkPlatform } = useContext<LucidContextType>(LucidContext);
   const [assets, setAssets] = useState<AssetType[]>([]);
-  const {assetsLockFromSmartContract,votingOngoing} =useContext<SmartContractType>(SmartContractContext);
+  const {assetsBidFromSmartContract,assetsLockFromSmartContract,setBiddingOnGoing,votingOngoing,lockingOnGoing,inforAssetVotes,topAssetVote,biddingOnGoing,startTimeVote,endTimeVote} =useContext<SmartContractType>(SmartContractContext);
   const [assetLock,setAssetLock]=useState<AssetLock[]>([])
+  const [assetBid,setAssetBid]=useState<AssetBidType[]>([])
   useEffect(() => {
-      const fetchDataAsset = async () => {
-          if (walletItem && walletItem.walletAddress) { // Kiểm tra xem walletItem và walletAddress có tồn tại không
-              try {
-                  const assetData = await getAllAsset(walletItem.walletAddress);
-                  setAssets(assetData);
-              } catch (error) {
-                  // Xử lý lỗi nếu cần
-              }
-          }
-      };
+    const fetchDataAsset = async () => {
+        if (lucidNeworkPlatform && walletItem.walletAddress) {
+            try {
+                const walletAddress=walletItem.walletAddress ;
+                const assetData = await getAllAsset(walletAddress);
+                setAssets(assetData);
+            } catch (error) {
+                // Xử lý lỗi nếu cần
+            }
+        }
+    };
+    fetchDataAsset();
+}, [networkPlatform, lucidNeworkPlatform, lockingOnGoing, votingOngoing, assetsLockFromSmartContract]);
 
-      if (isConnected) {
-        fetchDataAsset();
+// Kiểm tra điều kiện trước khi gọi setAssetLock
+useEffect(() => {
+    if (assetsLockFromSmartContract) {
+        setAssetLock(assetsLockFromSmartContract);
+    }
+}, [assetsLockFromSmartContract,inforAssetVotes]);
+useEffect(() => {
+  if (assetsBidFromSmartContract) {
+      // assetBid.forEach((e)=>{
+      //   console.log(`policyId:${e.policy_id}
+      //   assetName:${e.asset_name}
+      //   `)
+      // })
+      setAssetBid(assetsBidFromSmartContract);
+  }
+}, [assetsBidFromSmartContract]);
+ const handleChangeToBidding= async()=>{
+    if(isConnected){
+      if(walletItem.walletAddress===auctionAddress){
+        try{
+          console.log(topAssetVote)
+          const txHash=await unLock({lucid:lucidNeworkPlatform,topAsset:topAssetVote})
+        if (!txHash) {
+          toast.error("Transaction excuted failed");
+      } else {
+          toast.success("Transaction excuted success");
+          setBiddingOnGoing(true);
       }
-  }, [isConnected, walletItem,votingOngoing]);
-  
-  useEffect(() => {
-       setAssetLock(assetsLockFromSmartContract);
-}, [lucidNeworkPlatform,assetsLockFromSmartContract,votingOngoing]);
+      setBiddingOnGoing(false);
+        }
+        catch(e:any){
+            console.error("An error occurred while change to Bidding", e);
+            toast.error("An error occurred while change to Bidding");
+        }
+      }
+      else{
+        toast.error("Only the platform owner can do this");
+      }
+    }
+    else{
+      toast.error("You can connect wallet to excute it");
+    }
+ }
+ const handleChangeRecoverVote=async()=>{
+  if(isConnected){
+    if(walletItem.walletAddress===auctionAddress){
+      try{
+        const txHash=await recoverVote({lucid:lucidNeworkPlatform,startTime:startTimeVote,endTime:endTimeVote})
+      if (!txHash) {
+        toast.error("Transaction excuted failed");
+    } else {
+        toast.success("Transaction excuted success");
+        setBiddingOnGoing(true);
+    }
+    setBiddingOnGoing(false);
+      }
+      catch(e:any){
+          console.error("An error occurred while recover vote", e);
+          toast.error("An error occurred while recover vote");
+      }
+    }
+    else{
+      toast.error("Only the platform owner can do this");
+    }
+  }
+  else{
+    toast.error("You can connect wallet to excute it");
+  }
+ }
+ const handleChangeRecoverBid=async ()=>{
+  if(isConnected){
+    if(walletItem.walletAddress===auctionAddress){
+      try{
+        const txHash=await recoverBid({lucid:lucidNeworkPlatform})
+      if (!txHash) {
+        toast.error("Transaction excuted failed");
+    } else {
+        toast.success("Transaction excuted success");
+        setBiddingOnGoing(true);
+    }
+    setBiddingOnGoing(false);
+      }
+      catch(e:any){
+          console.error("An error occurred while recover vote", e);
+          toast.error("An error occurred while recover vote");
+      }
+    }
+    else{
+      toast.error("Only the platform owner can do this");
+    }
+  }
+  else{
+    toast.error("You can connect wallet to excute it");
+  }
+ }
+ 
   return (
     <div className="py-12">
        
       <div id="nft-category">
         <div className="text-3xl font-semibold text-center mb-12">
           NFT Category
+        </div>
+        List assets
+     {isConnected&& <div
+          id="area-bidding-list"
+          className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
+        >
+          {assets.map((asset) => (
+            <NFT
+              key={asset.policy_id}
+              name={`${asset.onchain_metadata?.name}`}
+              imgSrc={`${asset.onchain_metadata?.image}`}
+              policyId={asset?.policy_id}
+              assetName={asset?.asset_name}
+              voteAmount={10}
+              onBidding={false}
+              onLocking={false}
+              onVoting={false}
+            />
+          ))}
+        </div>}
+        List assets Vote
+        <div
+          id="area-bidding-list"
+          className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
+        >
+          {assetLock.map((asset) => (
+            <NFT
+              key={asset.policyId}
+              name={`${asset?.assetName}`}
+              imgSrc={`${asset?.image}`}
+              policyId={asset?.policyId}
+              assetName={asset?.assetNameHex}
+              voteAmount={asset?.voteAmount}
+              onBidding={false}
+              onLocking={true}
+              onVoting={true}
+            />
+          ))}
+        </div>
+        <div className="flex flex-col">
+
+          <button onClick={handleChangeToBidding}
+          className="rounded-[20px] bg-fog-1 px-3 py-1 border border-fog-2 
+          transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:text-green-500  hover:border-green-500"
+          >Change Asset To Bidding</button>
+        <button onClick={handleChangeRecoverVote}
+          className="rounded-[20px] bg-fog-1 px-3 py-1 border border-fog-2 
+          transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:text-green-500  hover:border-green-500"
+          >Recover Vote</button>
+        <button onClick={handleChangeRecoverBid}
+          className="rounded-[20px] bg-fog-1 px-3 py-1 border border-fog-2 
+          transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:text-green-500  hover:border-green-500"
+          >Recover Bid</button>
+        </div>
+        List assets on Bidding
+     <div
+          id="area-bidding-list"
+          className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
+        >
+          {assetBid.map((asset) => (
+            <NFT
+              key={asset.policy_id}
+              name={`${asset.title}`}
+              imgSrc={`${asset?.image}`}
+              policyId={asset?.policy_id}
+              assetName={asset?.asset_name}
+              voteAmount={asset.voteAmount}
+              priceBidding={asset.priceBidding}
+              amountConstrain={asset.amountConstraint}
+              author={asset.stakeKeyAuthor}
+              bidder={asset.stakeKeyBidder}
+              onBidding={true}
+              onLocking={true}
+              onVoting={false}
+            />
+          ))}
         </div>
         <SlideHaft
             className ="category"
@@ -94,44 +267,7 @@ export default function Home() {
           ]}
         />
       </div>
-      List assets
-     {isConnected&& <div
-          id="area-bidding-list"
-          className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
-        >
-          {assets.map((asset) => (
-            <NFT
-              key={asset.policy_id}
-              name={`${asset.onchain_metadata?.name}`}
-              imgSrc={`${asset.onchain_metadata?.image}`}
-              policyId={asset?.policy_id}
-              assetName={asset?.asset_name}
-              voteAmount={10}
-              onBidding={false}
-              onLocking={false}
-              onVoting={false}
-            />
-          ))}
-        </div>}
-        List assets Vote
-        <div
-          id="area-bidding-list"
-          className="container max-w-7xl py-12 grid grid-cols-4 gap-5"
-        >
-          {assetLock.map((asset) => (
-            <NFT
-              key={asset.policyId}
-              name={`${asset?.assetName}`}
-              imgSrc={`${asset?.image}`}
-              policyId={asset?.policyId}
-              assetName={asset?.assetName}
-              voteAmount={asset?.voteAmount}
-              onBidding={false}
-              onLocking={true}
-              onVoting={true}
-            />
-          ))}
-        </div>
+     
 
       <div id="area-top-user" className="my-12 mt-24 container max-w-7xl">
         <div className="flex items-center mb-8">

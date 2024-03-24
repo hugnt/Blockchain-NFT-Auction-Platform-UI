@@ -45,8 +45,28 @@ type AssetType = {
         name?: string;
     };
 };
+type AssetBidType = {
+    asset_name?: string;
+    // authorAddress?: string;
+    // bidderAddress?:string;
+    // winnerAddress?:string;
+    stakeKeyBidder?:string;
+    stakeKeyWinner?:string;
+    stakeKeyAuthor?:string;
+    priceBidding?: bigint;
+//    royalties?: bigint;
+    amountConstraint?:bigint;// ràng buộc giá
+    description?: string;
+    image?: string;
+    mediaType?: string;
+    title?: string;
+    fingerprint?: string;
+    policy_id?:string;
+    quantity?:string;
+    voteAmount?:number;
+};
 type AssetLock={
-    asset?:string;
+    assetNameHex?:string;
     assetName?:string;
     policyId?:string;
     image?:string;

@@ -1,4 +1,3 @@
-import { Policy } from "@mui/icons-material";
 import { Data, Lucid, fromText } from "lucid-cardano";
 import { totalmem } from "os";
 import { toast } from "react-toastify";
@@ -39,7 +38,7 @@ const lockBid=async function ( {lucid,policyId,assetName,addressBidder,addressAu
     const signedTx = await tx.sign().complete();
     const txHash = await signedTx.submit();
     await lucid.awaitTx(txHash);
-    return  txHash;
+    return  {txHash};
     
     }
     catch(e){

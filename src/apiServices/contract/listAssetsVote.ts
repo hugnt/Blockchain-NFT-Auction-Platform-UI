@@ -1,27 +1,50 @@
 import { Data, Lucid, Script, UTxO } from "lucid-cardano";
 import readValidator from "~/utils/readValidator";
 import { DatumVote } from "~/constants/datumvote";
-import { NftItemType } from "~/types/GenericsType";
-// addr_test1wzagvcgcwah7qfev9xk9m7vd6x9qgttgq9kfxhk3zkztztqr4ndm9
+import lucidSlice from "~/utils/store/features/lucidSlice";
+import { connectLucid } from "../cardano/lucid";
+// "addr_test1wp3edd27lcfkzpd2efc9wp9kaywmdl3p37kv3j4sqa36tnsq823m9"
 type Props = {
     lucid: Lucid;
 };
-const listAssetsVote = async function ({ lucid }: Props): Promise<NftItemType[] | any> {
+// address of contract lock:
+const listAssetsVote = async function (): Promise<DatumVote[]> {
     try {
-        if (lucid) {
-            const validator: Script = await readValidator.readValidatorVote();
-            const contractAddress: string = lucid.utils.validatorToAddress(validator);
-            console.log(`contract vote: ${contractAddress}`)
-            const scriptAssets: UTxO[] = await lucid.utxosAt(contractAddress);
-            const assets: NftItemType[] = scriptAssets.map(function (asset: any, index: number) {
-                const datum = Data.from<DatumVote>(asset.datum, DatumVote);
-                return datum;
-            });
-            return assets;
+        const lucid=await connectLucid();
+        if (!lucid) {
+            throw new Error('Lucid is not provided');
         }
+
+        const validator: Script = await readValidator.readValidatorVote();
+        const contractAddress: string = lucid.utils.validatorToAddress(validator);
+        const scriptAssets: UTxO[] = await lucid.utxosAt(contractAddress);
+        const utxosLock :UTxO[]= scriptAssets.filter((utxo:any)=>{
+           try{
+            const datum = Data.from<DatumVote>(utxo.datum, DatumVote);
+                if(datum){
+                    return true
+                }
+                return false; // That UTxO is not selected
+            }
+            catch (e) {
+                return false; // That UTxO is not selected
+            }
+        })
+        const assets: DatumVote[] = utxosLock.map(function (asset: any, index: number) {
+            try{
+                const datum = Data.from<DatumVote>(asset.datum, DatumVote);
+                return datum
+            } catch (error) {
+                console.log(error);
+                throw error; // Consider rethrowing the error for better error handling
+            }
+        });
+        return assets;
     } catch (error) {
         console.log(error);
+        throw error; 
     }
-};
+}
+
 
 export default listAssetsVote;
